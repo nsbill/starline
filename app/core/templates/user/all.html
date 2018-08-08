@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %} Информация о пользователе {% endblock %}
+
+{% block content_title %}  <h5>Информация о клиенте</h5> {% endblock %}
+
+{% block content %}
+<div class="medium-12 cell large-offset-1">
+  <div class="grid-x grid-padding-x">
+    <div class="medium-6 cell">
+      {% for client in allClients %}
+      <p>{{ allClients.search }}</p>
+      <p>
+        <a href="{{ url_for('core.user',uid=client.uid) }}">{{ client.uid }}</a>
+      </p>
+        <p>{{ client.login}}</p>
+        <p>{{ client.password}}</p>
+        <p>{{ client.registration}}</p>
+        <hr>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}

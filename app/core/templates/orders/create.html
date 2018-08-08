@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Создание заказа
+{% endblock %}
+
+{% block content_titel %}
+  Создать заказ
+{% endblock %}
+
+{% block content %}
+<form action="{{ url_for('core.create') }}" method="POST">
+  {{ form_order.csrf_token  }}
+  {{ form_ordertype.csrf_token  }}
+  <div class="grid-container grid-container-padded">
+    <div class="grid-x grid-margin-x">
+      <div class="cell small-12 medium-6 large-6">
+        <div class="grid-x grid-margin-x" style="margin-top: 10px;">
+            {{ error }}
+          <div class="cell small-12 medium-6 large-6">
+            {{ form_order.ord_num(placeholder="№ Договора") }}
+          </div>
+          <div class="cell small-12 medium-6 large-6">
+          </div>
+        </div>
+        <div class="cell small-12 medium-12 large-12">
+          {{ form_order.client(placeholder="Имя заказчика") }}
+        </div>
+        <div class="cell small-12 medium-12 large-12">
+          {{ form_order.phone(placeholder="Телефон") }}
+        </div>
+        <hr>
+        <div>
+          {{ form_order.descr.label("Заметки")}}
+          {{ form_order.descr }}
+        </div>
+      </div>
+      <div class="grid-x grid-margin-x" style="margin-top: 10px;">
+        <div class="cell small-12 medium-6 large-6">
+          {{ form_order.discount(placeholder="Скидка, %") }}
+        </div>
+        <div class="cell small-12 medium-6 large-6">
+          {{form_order.discount_sum(placeholder="Скидка, руб.")}}
+        </div>
+      </div>
+    </div>
+    <hr>
+    <div class="grid-x grid-margin-x">
+          <div class="cell small-12 medium-7 large-7">
+              {{form_ordertype.name(placeholder="Вид заказа")}}
+          </div>
+          <div class="cell small-12 medium-2 large-2">
+              {{form_ordertype.quantity(placeholder="Кол-во")}}
+          </div>
+          <div class="cell small-12 medium-2 large-2">
+              {{form_ordertype.quantity_sum(placeholder="Сумма")}}
+            </div>
+            <div>
+              <p>Добавить</p>
+            </div>
+       <table id="table_container">
+             <tr>
+              <td width="100px" colspan="2"><strong>Название</strong></td>
+             </tr>
+        </table>
+        <br/>
+<input type="button" value="Добавить поле" id="add" onclick="return add_new_image();">
+      </div>
+    <div>
+      <input type="submit" class="button" value="Submit">
+    </div>
+  </div>
+</form>
+{% endblock %}

@@ -1,0 +1,195 @@
+{% extends 'base.html' %}
+
+{% block title %} Создание пользователя {% endblock %}
+
+{% block content_title %}<h5>Создать пользователя</h5>{% endblock %}
+    
+{% block content %}
+<form action="{{ url_for('core.user_add')}}" method="POST">
+		<div class="grid-container">
+			<div class="grid-x grid-padding-x">
+        <div class="medium-6 cell">
+          {{ form.csrf_token }}
+          {{form.uid.label }}{{ form.uid }}
+          {{ form.login.label }}{{ form.login }}
+          <ul>
+            {% for error in form.login.errors %}
+            <li style="color:red;">{{ error }}</li>
+            {% endfor %}
+          </ul>
+          {{ form.password.label }}{{ form.password }}
+          <ul>
+            {% for error in form.password.errors %}
+            <li style="color:red;">{{ error }}</li>
+            {% endfor %}
+          </ul>
+          {{ form.activate.label }}{{ form.activate }}
+          <ul>
+            {% for error in form.activate.errors %}
+            <li style="color:red;">{{ error }}</li>
+            {% endfor %}
+          </ul>
+          {{ form.disable.label }}{{ form.disable }}
+        </div>
+      </div>
+        <input type="submit" class="button" value="Submit">
+    </div>
+</form>
+<form action="{{ get_absolute_url  }}/user/add" method="POST" id="add" enctype="multi-part/formdata">
+		<div class="grid-container">
+			<div class="grid-x grid-padding-x">
+        <div class="medium-12 cell"><hr></div>
+				<div class="medium-6 cell">
+						<input type="text" placeholder="№ Договора">
+				</div>
+				<div class="medium-6 cell">
+						<input type="text" placeholder="Дата договора">
+				</div>
+				<div class="medium-6 cell">
+          <label>Логин:
+            <input name='add' type="text" placeholder="логин" value="{{ request.args.get('login', '') }}" >
+          </label>
+          <label>Пароль:
+              <input type="password" aria-describedby="passwordHelpText">
+            </label>
+            <p class="help-text" id="passwordHelpText">Ваш пароль должен содержать не менее 8 символов.</p>
+        </div>
+        <div class="medium-6 cell">
+			    <div class="grid-x grid-padding-x">
+            <div class="medium-6 cell">
+              <label>
+                <input type="text" placeholder="Кредит(руб.)">
+              </label>
+              <label>
+                <input type="text" placeholder="Cкидка(%)">
+              </label>
+            </div>
+            <div class="medium-6 cell">
+              <label>
+                <input type="text" placeholder="Дата: 0000-00-00">
+              </label>
+              <label>
+                <input type="text" placeholder="Дата: 0000-00-00">
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="medium-12 cell"><hr></div>
+          <div class="medium-12 cell">
+            <div class="grid-x grid-padding-x">
+              <div class="medium-6 cell">
+                <label> Учетные данные
+                <div class="medium-6 cell">
+                    <input type="text" placeholder="Ф.И.О.">
+                </div>
+                <div class="medium-6 cell">
+                    <input type="text" placeholder="Телефон">
+                </div>
+                <div class="medium-6 cell">
+                    <input type="text" placeholder="E_mail">
+                </div>
+              </div>
+              <div class="medium-6 cell">
+                  <div class="medium-6 cell">
+                    <label> Паспортные данные
+                    <div class="medium-6 cell">
+                        <input type="text" placeholder="Номер">
+                    </div>
+                    <div class="medium-6 cell">
+                        <input type="text" placeholder="Дата">
+                    </div>
+                    <div class="medium-6 cell">
+                        <input type="text" placeholder="Выдано">
+                    </div>
+                    </label>
+                  </div>
+              </div>
+          </div>
+        <div class="medium-12 cell"><hr></div>
+        <div class="medium-12 cell">
+          <div class="grid-x grid-padding-x">
+            <div class="medium-6 cell">
+              <label>Районы</label>
+              <div class="medium-6 cell">
+                  <select>
+                    <option value="showboat">Район1</option>
+                    <option value="redwing">Район2</option>
+                    <option value="narcho">Район3</option>
+                    <option value="hardball">Район4</option>
+                  </select>
+              </div>
+              <div class="medium-6 cell">
+                <label>Улица
+                  <select>
+                    <option value="showboat">Улица1</option>
+                    <option value="redwing">Улица2</option>
+                    <option value="narcho">Улица3</option>
+                    <option value="hardball">Улица4</option>
+                  </select>
+                </label>
+              </div>
+              <div class="medium-6 cell">
+                <label>Дом
+                  <select>
+                    <option value="showboat">Дом1</option>
+                    <option value="redwing">Дом2</option>
+                    <option value="narcho">Дом3</option>
+                    <option value="hardball">Дом4</option>
+                  </select>
+                </label>
+              </div>
+              <div class="medium-6 cell">
+                <label>Квартира
+                  <select>
+                    <option value="showboat">Квартира</option>
+                    <option value="redwing">Квартира</option>
+                    <option value="narcho">Квартира</option>
+                    <option value="hardball">Квартира</option>
+                  </select>
+                </label>
+              </div>
+            </div>
+              <div class="medium-6 cell">
+                  <div class="medium-6 cell">
+                    <label> Тарифный план:
+                    <div class="medium-6 cell">
+                      <select>
+                        <option value="showboat">Тариф1</option>
+                        <option value="redwing">Тариф1</option>
+                        <option value="narcho">Тариф1</option>
+                        <option value="hardball">Тариф1</option>
+                      </select>
+                    </div>
+                    </label>
+                  </div>
+                  <div class="medium-6 cell">
+                    <label> Сетевые настройки
+                    <div class="medium-6 cell">
+                        <input type="text" placeholder="IP">
+                    </div>
+                    <div class="medium-6 cell">
+                        <input type="text" placeholder="MAC address:">
+                    </div>
+                    <div class="medium-6 cell">
+                        <input type="text" placeholder="Одновременно">
+                    </div>
+                    </label>
+                  </div>
+              </div>
+          </div>
+        </div>
+				<div class="medium-6 cell">
+          <label>Ативировать
+            <input id="checkbox1" type="checkbox"><label for="checkbox1"></label>
+					</label>
+				</div>
+				<div class="medium-6 cell">
+					<label>Комментарии:
+            <textarea placeholder="Комментарии"></textarea>
+					</label>
+				</div>
+			</div>
+		</div>
+    <input type="submit" class="button" value="Submit">
+	</form>
+{% endblock %}

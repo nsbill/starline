@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %} Информация о пользователе {% endblock %}
+
+{% block content_title %}  <h5>Информация о клиенте</h5> {% endblock %}
+
+{% block content %}
+<div class="medium-12 cell large-offset-1">
+  <div class="grid-x grid-padding-x">
+    <div class="medium-6 cell">
+      <p> {{ infoClient.uid }}</p>
+      <p> {{ infoClient.login }}</p>
+      <p> {{ infoClient.password }}</p>
+      <p> {{ infoClient.registration }}</p>
+      <p> {{ infoClient.status}}</p>
+      <p> {{ infoClient.activate}}</p>
+      <p> {{ infoClient.disable}}</p>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,66 @@
+<!doctype html>
+<html class="no-js" lang="ru" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/foundation.min.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/app.css') }}">
+    <title>
+      {% block title %}
+      {% endblock %} | XXX
+    </title>
+  </head>
+  <body>
+        {% block auth_content %}
+        <div class="title-bar" data-responsive-toggle="example-menu" data-hide-for="medium">
+          <button class="menu-icon" type="button" data-toggle></button>
+          <div class="title-bar-title">Menu</div>
+        </div>
+
+        <div class="top-bar" id="example-menu">
+          <div class="top-bar-left">
+            <ul class="dropdown menu" data-dropdown-menu>
+              <li class="menu-text">XXX</li>
+              <li class="has-submenu">
+                <a href="{{ get_absolute_url }}/core/search">Поиск</a>
+                <ul class="submenu menu vertical" data-submenu>
+                  <li><a href="{{ get_absolute_url }}/core/nid">Номер заказа</a></li>
+                  <li><a href="{{ get_absolute_url }}/core/name">Заказчик</a></li>
+                </ul>
+              </li>
+              <li><a href="/core/orders/all">Заказы</a>
+                <ul class="submenu menu vertical" data-submenu>
+                  <li><a href="{{ get_absolute_url }}/core/orders/create">Создать</a></li>
+                  <li><a href="{{ get_absolute_url }}/core/orders/view">Просмотреть</a></li>
+                  <li><a href="{{ get_absolute_url }}/core/orders/delete">Удалить</a></li>
+                </ul>
+              </li>
+              <li><a href="/core/error">Отчеты</a>
+                <ul class="submenu menu vertical" data-submenu>
+                  <li><a href="{{ get_absolute_url }}/core/pays">Приход</a></li>
+                  <li><a href="{{ get_absolute_url }}/core/bills">Расход</a></li>
+                </ul>
+              </li>
+              <li><a href="/core/error"></a></li>
+              <li><a href="{{ get_absolute_url }}/logout"> Выход </a></li>
+            </ul>
+          </div>
+        <div class="top-bar-right">
+          <form action="{{ get_absolute_url  }}/core/search" method="GET" id="search" enctype="multi-part/formdata">
+             <ul class="menu">
+              <li><input type="search" placeholder="Универсальный" name="search" value="{{ request.args.get('search', '') }}"></li>
+              <li><input type="submit" class="button" value="Поиск"></li>
+             </ul>
+          </form>
+    </div>
+  </div>
+    {% block content_title %}{% endblock %}
+    {% block content %}{% endblock %}
+    {% endblock auth_content %}
+    <script src="{{ url_for('static', filename='js/vendor/jquery.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/vendor/what-input.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/vendor/foundation.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+  </body>
+</html>

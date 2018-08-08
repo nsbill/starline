@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block title %} Информация о заказах {% endblock %}
+
+{% block content_title %}  <h5>Информация о заказах</h5> {% endblock %}
+
+{% block content %}
+<div class="medium-12 cell large-offset-1">
+  <div class="grid-x grid-padding-x">
+    <div class="medium-10 cell">
+      <p>{{ allOrders.search }}</p>
+      <table class="stack">
+        <thead>
+          <tr>
+            <th width="25">№ заказа</th>
+            <th width="350">Заказчик</th>
+            <th width="200">Телефон</th>
+            <th width="200">Вид заказа</th>
+            <th width="300">Дата создания</th>
+          </tr>
+        </thead>
+        {% for order in allOrders %}
+        <tbody>
+          <tr>
+            <td>{{ order.ord_num }}</td>
+            <td>{{ order.client }}</td>
+            <td>{{ order.phone }}</td>
+            <td>{{ order.name }}</td>
+            <td>{{ order.create_date}}</td>
+          </tr>
+        </tbody>
+      {% endfor %}
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
