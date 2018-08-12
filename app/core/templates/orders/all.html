@@ -21,12 +21,11 @@
         {% for order in allOrders %}
         <tbody>
           <tr>
-            <td><a href="{{ get_absolute_url  }}/core/orders/addtype/{{ order.id }}">{{ order.id }}</td>
-            <td>{{ order.ord_num }}</td>
+            <td><a href="{{ get_absolute_url  }}/core/orders/addtype/{{ order.id }}">{{ order.ord_num }}</td>
             <td>{{ order.client }}</td>
             <td>{{ order.phone }}</td>
             <td>{{ order.name }}</td>
-            <td>{{ order.create_date}}</td>
+            <td>{{ order.create_date.strftime('%Y-%m-%d %H:%m:%S')}}</td>
           </tr>
         </tbody>
       {% endfor %}
