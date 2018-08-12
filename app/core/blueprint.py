@@ -10,7 +10,7 @@ from .forms import  OrderForm, OrderTypeForm
 sys.path.insert(0, '/app/core')
 core = Blueprint('core',__name__, template_folder='templates')
 
-from orders import allOrders, infoOrder, addOrder, addOrderType
+from orders import allOrders, infoOrder, addOrder, addOrderType, viewOrder, selectOrderType
 
 
 @core.route('/', methods=['GET'])
@@ -32,39 +32,45 @@ def orders():
 
 @core.route('/orders/create', methods=['POST','GET'])
 def create():
-    ''' Добавить пользователя '''
+    ''' Добавить ордер '''
     form_order = OrderForm()
-    form_ordertype = OrderTypeForm()
-#    info = request.form.to_dict()
-#    print('-'*20)
-#    print(info)
-#    for i,k in request.form.items():
-#        print(i,k)
-
+    info = request.form.to_dict()
+    print('-'*20)
+    print(info)
     if form_order.validate_on_submit():
         add = []
-        add_type = []
-        if form_ordertype.validate_on_submit():
-            for i in form_order:
-                if i.data != None:
-                    add.append((i.name,i.data))
-            for i in form_ordertype:
-                if i.data != None:
-                    add_type.append((i.name, i.data))
-
+        for i in form_order:
+            if i.data != None:
+                add.append((i.name,i.data))
         add_order = dict(add)
         add = addOrder(**add_order)
-
+        print('=add+'*20)
+        print(add.id)
         if add == 'error':
             error = 'Ошибка договор с номером '+ add_order['ord_num']+' существует'
-            return render_template('orders/create.html',form_order=form_order,form_ordertype=form_ordertype, error=error)
+            return render_template('orders/create.html',form_order=form_order, error=error)
         else:
-            add_order_type= dict(add_type)
-            add_order_type['oid'] = int(add.id)
-            add_order_type = addOrderType(**add_order_type)
-            return redirect('core/orders/all')
-    return render_template('orders/create.html',form_order=form_order,form_ordertype=form_ordertype)
+            return redirect('core/orders/addtype/'+ str(add.id))
+    return render_template('orders/create.html',form_order=form_order)
 
+@core.route('/orders/addtype/<order_id>', methods=['POST','GET'])
+def addtype(order_id):
+    ''' Редактировать ордер '''
+    view_order = viewOrder(order_id)
+    form_ordertype = OrderTypeForm()
+#    data = [i for i in view_order]
+    add = []
+    if form_ordertype.validate_on_submit():
+        for i in form_ordertype:
+            if i.data != None:
+                add.append((i.name, i.data))
+
+        add_order_type= dict(add)
+        add_order_type['oid'] = int(order_id)
+        add_order_type = addOrderType(**add_order_type)
+        return redirect('core/orders/addtype/'+ order_id)
+    sot = selectOrderType(order_id) # Выборка наименований заказа
+    return render_template('orders/addtype.html',view_order=view_order, form_ordertype=form_ordertype, sot=sot)
 
 @core.route('/error', methods=['GET'])
 def error():

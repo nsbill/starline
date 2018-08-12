@@ -1,0 +1,34 @@
+{% extends 'base.html' %} 
+
+{% block title %}
+	Редактирование заказа
+{% endblock %}
+
+{% block content_titel %}
+	Редактирование заказа
+{% endblock %}
+
+{% block content %}
+<form method="POST">
+  {{ form_ordertype.csrf_token  }}
+  {{ view_order.id }}
+  {{ view_order.ord_num }}
+  {{ view_order.client }}
+  <div class="grid-x grid-margin-x">
+          <div class="cell small-12 medium-7 large-7">
+              {{form_ordertype.name(placeholder="Вид заказа")}}
+          </div>
+          <div class="cell small-12 medium-2 large-2">
+              {{form_ordertype.quantity(placeholder="Кол-во")}}
+          </div>
+          <div class="cell small-12 medium-2 large-2">
+              {{form_ordertype.quantity_sum(placeholder="Сумма")}}
+            </div>
+            <div>
+              <input type="submit" class="button" value="Submit">
+            </div>
+      </div>
+  </div>
+</form>
+{{ sot }}
+{% endblock %}

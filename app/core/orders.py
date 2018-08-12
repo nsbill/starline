@@ -39,14 +39,26 @@ def addOrder(**kwargs):
     a = Orders(**data)
     db.session.add(a)
     db.session.commit()
-    ord_id = Orders.query.filter(Orders.ord_num==data['ord_num']).first()
+    ord_id = Orders.query.filter_by(ord_num=data['ord_num']).first()
     return ord_id
+
+def viewOrder(order_id):
+    print(order_id)
+    query = Orders.query.filter_by(id=order_id).first()
+    print(query)
+    return query
 
 def addOrderType(**kwargs):
     """ Add an order type to the database"""
     db.session.close()
     at = OrdersType(**kwargs)
+    print('=at='*30)
+    print(at)
+    print(kwargs)
     db.session.add(at)
     db.session.commit()
     return 'Save OrderType'
 
+def selectOrderType(order_id):
+    query = OrdersType.query.filter_by(oid=int(order_id)).all()
+    return query

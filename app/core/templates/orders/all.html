@@ -21,6 +21,7 @@
         {% for order in allOrders %}
         <tbody>
           <tr>
+            <td><a href="{{ get_absolute_url  }}/core/orders/addtype/{{ order.id }}">{{ order.id }}</td>
             <td>{{ order.ord_num }}</td>
             <td>{{ order.client }}</td>
             <td>{{ order.phone }}</td>
