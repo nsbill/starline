@@ -14,7 +14,7 @@
             <th width="25">№ заказа</th>
             <th width="350">Заказчик</th>
             <th width="200">Телефон</th>
-            <th width="200">Вид заказа</th>
+            <th width="200">Cтатус заказа</th>
             <th width="300">Дата создания</th>
           </tr>
         </thead>
@@ -24,8 +24,10 @@
             <td><a href="{{ get_absolute_url  }}/core/orders/addtype/{{ order.id }}">{{ order.ord_num }}</td>
             <td>{{ order.client }}</td>
             <td>{{ order.phone }}</td>
-            <td>{{ order.name }}</td>
+            <td>Выполнено</td>
             <td>{{ order.create_date.strftime('%Y-%m-%d %H:%m:%S')}}</td>
+	    
+
           </tr>
         </tbody>
       {% endfor %}

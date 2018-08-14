@@ -10,7 +10,7 @@ from .forms import  OrderForm, OrderTypeForm
 sys.path.insert(0, '/app/core')
 core = Blueprint('core',__name__, template_folder='templates')
 
-from orders import allOrders, infoOrder, addOrder, addOrderType, viewOrder, selectOrderType
+from orders import allOrders, infoOrder, addOrder, addOrderType, viewOrder, selectOrderType, discountOrder, payOrder
 
 
 @core.route('/', methods=['GET'])
@@ -44,8 +44,8 @@ def create():
                 add.append((i.name,i.data))
         add_order = dict(add)
         add = addOrder(**add_order)
-        print('=add+'*20)
-        print(add.id)
+#        print('=add+'*20)
+#        print(add.id)
         if add == 'error':
             error = 'Ошибка договор с номером '+ add_order['ord_num']+' существует'
             return render_template('orders/create.html',form_order=form_order, error=error)
@@ -70,7 +70,11 @@ def addtype(order_id):
         add_order_type = addOrderType(**add_order_type)
         return redirect('core/orders/addtype/'+ order_id)
     sot = selectOrderType(order_id) # Выборка наименований заказа
-    return render_template('orders/addtype.html',view_order=view_order, form_ordertype=form_ordertype, sot=sot)
+    discount = discountOrder(sot[1],view_order.discount) # Расчет скидки
+    pays = payOrder(sot,discount) # Расчет суммы оплаты
+    print('-Pays='*20)
+    print(pays)
+    return render_template('orders/addtype.html',view_order=view_order, form_ordertype=form_ordertype, sot=sot,discount=discount,pays=pays)
 
 @core.route('/error', methods=['GET'])
 def error():

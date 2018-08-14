@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import Form,IntegerField, StringField, TextAreaField, BooleanField, PasswordField, FloatField
-from wtforms.validators import InputRequired, Length
+from wtforms.validators import InputRequired, Length, NumberRange
 from wtforms.fields.html5 import DateField, DateTimeField
 
 class OrderForm(FlaskForm):
@@ -9,8 +9,8 @@ class OrderForm(FlaskForm):
 #    complete_date = DateTimeField('complete_date', validators=[InputRequired()], format='%Y-%m-%d mm:ss')
     client = StringField('client', validators=[InputRequired()])
     phone = StringField('phone', validators=[InputRequired()])
-    discount = IntegerField('discount',default=0)
-    discount_sum = IntegerField('discount_sum',default=0)
+    discount = IntegerField('discount',default=0,validators=[InputRequired(), NumberRange(min=0,max=100, message=' Ошибка: скидка от 0 до 100%')])
+    discount_sum = IntegerField('discount_sum',default=0,validators=[InputRequired(), NumberRange(min=0, message=' Ошибка: скидка от 0 руб.')])
 #    orders_type_id = IntegerField('orders_type_id')
 #    status_id = IntegerField('status_id')
     descr = TextAreaField('descr')
@@ -23,8 +23,8 @@ class OrderForm(FlaskForm):
 
 class OrderTypeForm(FlaskForm):
     name = StringField('name', validators=[InputRequired()])
-    quantity = FloatField('quantity', validators=[InputRequired()])
-    quantity_sum = FloatField('quantity_sum', validators=[InputRequired()])
+    quantity = FloatField('quantity', validators=[InputRequired(), NumberRange(min=1,max=100000000, message=' Ошибка ввода: кол-во от 1 ед./шт.')])
+    quantity_sum = FloatField('quantity_sum', validators=[InputRequired(), NumberRange(min=0,max=100000000, message='Ошибка ввода: сумма от 0 руб')])
 
 
 #class ClientForm(FlaskForm):

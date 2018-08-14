@@ -2,10 +2,10 @@ from datetime import datetime
 
 class ModOrders:
     '''Ордер заказа'''
-    def __init__(self, create_date=datetime.now()):
+    def __init__(self):
 #        self.oid = '0'
         self.ord_num = ''
-        self.create_date = create_date
+#        self.create_date = create_date
         self.client = ''
         self.phone = ''
         self.discount = 0
@@ -16,7 +16,7 @@ class ModOrders:
     def show(self):
         '''Просмотр ордера'''
         descr = dict(zip(['ord_num',
-                        'create_date',
+#                        'create_date',
                         'client',
                         'phone',
                         'discount',
@@ -24,7 +24,7 @@ class ModOrders:
                         'descr',
                         'csrf_token'],
                                 (self.ord_num,
-                                self.create_date,
+#                                self.create_date,
                                 self.client,
                                 self.phone,
                                 self.discount,

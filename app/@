@@ -9,76 +9,66 @@
 {% endblock %}
 
 {% block content %}
-<div class="grid-x grid-padding-x">
-  <div class="medium-12 cell">
-    <div class="grid-x grid-padding-x">
-      <div class="medium-6 cell">
-        <div class="medium-12">
-          <div class="grid-x grid-padding-x">
-            <div class="medium-6 medium-offset-1">
-              Заказ: № {{ view_order.ord_num }}
+<div class="medium-12">
+  <div class="grid-x grid-padding-x">
+    <div class="medium-12 cell">
+      <div class="grid-x grid-padding-x">
+          <div class="medium-6 cell">
+            <div class="medium-12">
+              <div class="grid-x grid-padding-x">
+                <div class="medium-6 medium-offset-1">
+                  Заказ: № {{ view_order.ord_num }}
+                </div>
+                <div class="medium-4">
+                  {{ view_order.create_date.strftime('%Y-%m-%d %H:%M:%S') }}
+                </div>
+              </div>
             </div>
-            <div class="medium-4">
-              {{ view_order.create_date.strftime('%Y-%m-%d %H:%M:%S') }}
-            </div>
-            <div class="small-12 medium-12 callout secondary">
+            <div class="medium-12 callout secondary">
               <label>Заказчик:
                 {{ view_order.client }}
               </label>
+            </div>
+            <div class="medium-12 callout secondary">
               <label>Телефон:
                 {{ view_order.phone}}
               </label>
             </div>
           </div>
-        </div>
-      </div>
-      <div class="medium-6 cell callout secondary">
+          <div class="medium-6 cell">
           <div class="grid-x grid-padding-x">
-            <div class="medium-12 medium-offset-1 callout secondary">
-              <b>Счет фактура:</b> | 
-              Выполнение: {{ view_order.complete}}  |
-              {{ view_order.status_id}}
+                <div class="medium-4">
+                  <label>Скидка,%: {{ view_order.discount }}</label> 
+                  <label>Скидка,руб.: {{ view_order.discount_sum }}</label>
+                </div>
+              <div class="medium-4">
+                <div>
+                  <p><b>Сумма заказа: </b> {{ sot[1] }} руб.</p>
+                  <p><b>Скидка:</b> {{ discount|format(price)  }} руб.</p>
+                  <p>Итого: <b>0 руб.</b>
+                </div>
+              </div>
+          </div>
           <div class="grid-x grid-padding-x">
-            <div class="small-12 medium-6 medium-offset-1 callout secondary">
-              <div>
-                Скидка,% : {{ view_order.discount }}
-              </div>
-                Скидка,руб :  {{ view_order.discount_sum }}
-              <div>
-                С фонда:  1000000 руб.
-              </div>
-            </div>
-            <div class="small-12 medium-6 medium-offset-1 callout secondary">
-              <div>
-                <b>Сумма заказа: </b> {{ sot[1]|round(2) }} руб.
-              </div>
-              <div>
-                <b>Скидка:</b> {{ discount|round(2) }} руб.
-              </div>
-              <div>
-                <b>К оплате:</b> {{ pays|round(2) }} руб.
-              </div>  
-              <hr>
-              <div>
-                <b>Предоплата:</b>50 руб.
-              </div>
-              <hr>
-              <div>
-                <b>Оплачено: </b>50 руб.</b> 
-                <b>Остаток:</b>  30 руб.
-              </div>
-              <div>
-                <b>Итог:</b> Заказ не оплачен
-              </div>
-              <div>
-                Сдача: 0 руб.
-              </div>
+            <div class="medium-11 callout secondary">
+              Предоплата:
+              Расход:
+              <label>Заметки:
+              {{ view_order.descr}}
+              </label>
             </div>
           </div>
+            <div class="medium-4">
+              <label>Выполнение:
+              {{ view_order.complete}}
+              {{ view_order.status_id}}</label>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
   </div>
 </div>
+<hr>
 <div class="medium-12 cell">
   <div class="grid-x grid-padding-x">
     <div class="medium-12 cell">
@@ -108,7 +98,7 @@
           </div>
       </div>
     </form>
-  </div>
+    </div>
 </div>
 <hr>
 <div class="medium-12 cell">
@@ -120,7 +110,6 @@
             <th width="500">Наименнование заказа</th>
             <th width="30">Кол-во</th>
             <th width="30">Сумма</th>
-            <th width="30">Всего</th>
             <th width="100"></th>
           </tr>
         </thead>
@@ -130,7 +119,6 @@
             <td>{{ order[0].name }}</td>
             <td>{{ order[0].quantity}}</td>
             <td>{{ order[0].quantity_sum}}</td>
-            <td>{{ order[1]}}</td>
             <td>ред./ удал.</td>
           </tr>
         </tbody>
@@ -139,13 +127,4 @@
     </div>
   </div>
 </div>
-            <div class="small-12 medium-12 callout secondary">
-              <label>Заметки:
-              </label>
-                <div class=row>
-                  <div class="callout text-left">
-                    <p class="text-left leag" >{{ view_order.descr}}<p>
-                  </div>
-                </div>
-            </div>
 {% endblock %}

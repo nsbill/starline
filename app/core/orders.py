@@ -43,22 +43,52 @@ def addOrder(**kwargs):
     return ord_id
 
 def viewOrder(order_id):
-    print(order_id)
     query = Orders.query.filter_by(id=order_id).first()
-    print(query)
     return query
 
 def addOrderType(**kwargs):
     """ Add an order type to the database"""
     db.session.close()
     at = OrdersType(**kwargs)
-    print('=at='*30)
-    print(at)
-    print(kwargs)
     db.session.add(at)
     db.session.commit()
     return 'Save OrderType'
 
+
+
+def listsum(n):
+    """Подсчет суммы"""
+    count = 0
+    for i in n:
+        count = count + i
+    return count
+
+def discountOrder(s,n):
+    """Расчет скидки %"""
+    data = s/100*n
+    return data
+
+def payOrder(order,discount):
+#    ([(<OrdersType 19>, 100.0), (<OrdersType 26>, 200.0)], 300.0)
+#    60.0
+    print('-payOrder='*20)
+    print(order)
+    print(discount)
+    data = order[1] - discount
+    return data
+
+#count = 0 if count == N else N + 1
 def selectOrderType(order_id):
     query = OrdersType.query.filter_by(oid=int(order_id)).all()
-    return query
+#    query = [(i,i.quantity * i.quantity_sum if i.quantity >= 1 else 0) for i in query]
+    query = [(i,i.quantity * i.quantity_sum if i.quantity >= 1 else 0 if i.quantity_sum==0 else 0) for i in query]
+    print('-sel_data='*20)
+    print(query)
+    for i in query:
+        if i[1] == 0:
+            print('=quantity_sum='*10)
+            print(i[0].quantity_sum)
+    type_sum = listsum([n[1] for n in query])
+    return query,type_sum
+
+
