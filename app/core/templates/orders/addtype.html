@@ -100,7 +100,7 @@
                   {{form_ordertype.quantity(placeholder="Кол-во")}}
               </div>
               <div class="cell small-12 medium-2 large-2">
-                  {{form_ordertype.quantity_sum(placeholder="Сумма")}}
+                  {{form_ordertype.quantity_sum(placeholder="Сумма")}} 
               </div>
               <div>
                   <input type="submit" class="button" value="Submit">
@@ -119,8 +119,8 @@
           <tr>
             <th width="500">Наименнование заказа</th>
             <th width="30">Кол-во</th>
+            <th width="30">Цена</th>
             <th width="30">Сумма</th>
-            <th width="30">Всего</th>
             <th width="100"></th>
           </tr>
         </thead>
@@ -129,8 +129,8 @@
           <tr>
             <td>{{ order[0].name }}</td>
             <td>{{ order[0].quantity}}</td>
-            <td>{{ order[0].quantity_sum}}</td>
-            <td>{{ order[1]}}</td>
+            <td>{{ order[0].quantity_sum|round(2)}} руб.</td>
+            <td>{{ order[1]|round(2)}} руб.</td>
             <td>ред./ удал.</td>
           </tr>
         </tbody>

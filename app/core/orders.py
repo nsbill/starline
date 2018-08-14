@@ -63,17 +63,22 @@ def listsum(n):
         count = count + i
     return count
 
-def discountOrder(s,n):
+def discountOrder(summa,discount_percent,discount_sum):
     """Расчет скидки %"""
-    data = s/100*n
-    return data
+    if summa != 0:
+        if discount_percent != 0:
+            discount_percent= summa/100*discount_percent
+            print('-discount-='*3)
+            print(discount_percent)
+        discount = discount_percent + discount_sum
+        print(discount)
+        return discount
+    else:
+        discount = discount_sum
+    return discount
 
 def payOrder(order,discount):
-#    ([(<OrdersType 19>, 100.0), (<OrdersType 26>, 200.0)], 300.0)
-#    60.0
-    print('-payOrder='*20)
-    print(order)
-    print(discount)
+    """ Расчет оплаты с учетом скидки """
     data = order[1] - discount
     return data
 

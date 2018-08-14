@@ -57,6 +57,7 @@ def create():
 def addtype(order_id):
     ''' Редактировать ордер '''
     view_order = viewOrder(order_id)
+    print(view_order.discount_sum)
     form_ordertype = OrderTypeForm()
 #    data = [i for i in view_order]
     add = []
@@ -70,7 +71,8 @@ def addtype(order_id):
         add_order_type = addOrderType(**add_order_type)
         return redirect('core/orders/addtype/'+ order_id)
     sot = selectOrderType(order_id) # Выборка наименований заказа
-    discount = discountOrder(sot[1],view_order.discount) # Расчет скидки
+    discount = discountOrder(sot[1],view_order.discount, view_order.discount_sum) # Расчет скидки
+
     pays = payOrder(sot,discount) # Расчет суммы оплаты
     print('-Pays='*20)
     print(pays)
