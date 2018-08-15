@@ -45,7 +45,7 @@
               </div>
                 Скидка,руб :  {{ view_order.discount_sum }}
               <div>
-                С фонда:  1000000 руб.
+                С фонда:  0 руб.
               </div>
             </div>
             <div class="small-12 medium-6 medium-offset-1 callout secondary">
@@ -131,7 +131,7 @@
             <td>{{ order[0].quantity}}</td>
             <td>{{ order[0].quantity_sum|round(2)}} руб.</td>
             <td>{{ order[1]|round(2)}} руб.</td>
-            <td>ред./ удал.</td>
+            <td><a href="{{ get_ablolute_url  }}/core/orders/edittype/{{ order[0].id }}">ред.</td>
           </tr>
         </tbody>
       {% endfor %}

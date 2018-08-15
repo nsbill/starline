@@ -1,0 +1,42 @@
+{% extends 'base.html' %} 
+{% block title %}
+Редактирование наименование
+{% endblock %}
+
+{% block content_titel %}
+Редактирование наименование
+{% endblock %}
+{% block content_type_name %} 
+<div class="medium-12 cell">
+  <div class="grid-x grid-padding-x">
+    <div class="medium-12 cell">
+      <form method="POST">
+        {{ form_ordertype.csrf_token }}
+        <div class="grid-x grid-margin-x">
+          <div class="medium-5  medium-offset-7">
+            {% for error in form_ordertype.quantity.errors %}
+            <li style="color:red;">{{ error  }}</li>
+            {% endfor %}
+            {% for error in form_ordertype.quantity_sum.errors %}
+            <li style="color:red;">{{ error  }}</li>
+            {% endfor %}
+            </div>
+            <div class="cell small-12 medium-7 large-7">
+              {{form_ordertype.name(value=edit_quantity.name)}}
+            </div>
+            <div class="cell small-12 medium-2 large-2">
+              {{form_ordertype.quantity(value=edit_quantity.quantity)}}
+            </div>
+            <div class="cell small-12 medium-2 large-2">
+              {{form_ordertype.quantity_sum(value=edit_quantity.quantity_sum)}}
+            </div>
+            <div>
+              <input type="submit" class="button" value="Submit">
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

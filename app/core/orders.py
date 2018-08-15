@@ -96,4 +96,7 @@ def selectOrderType(order_id):
     type_sum = listsum([n[1] for n in query])
     return query,type_sum
 
+def editQuantity(quantity_id):
+    query = OrdersType.query.filter_by(id=quantity_id).first()
+    return query
 

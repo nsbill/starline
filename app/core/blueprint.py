@@ -10,7 +10,7 @@ from .forms import  OrderForm, OrderTypeForm
 sys.path.insert(0, '/app/core')
 core = Blueprint('core',__name__, template_folder='templates')
 
-from orders import allOrders, infoOrder, addOrder, addOrderType, viewOrder, selectOrderType, discountOrder, payOrder
+from orders import allOrders, infoOrder, addOrder, addOrderType, viewOrder, selectOrderType, discountOrder, payOrder, editQuantity
 
 
 @core.route('/', methods=['GET'])
@@ -77,6 +77,13 @@ def addtype(order_id):
     print('-Pays='*20)
     print(pays)
     return render_template('orders/addtype.html',view_order=view_order, form_ordertype=form_ordertype, sot=sot,discount=discount,pays=pays)
+
+
+@core.route('/orders/edittype/<quantity_id>', methods=['GET','POST'])
+def edittype(quantity_id):
+    form_ordertype = OrderTypeForm()
+    edit_quantity = editQuantity(quantity_id)
+    return render_template('orders/edittype.html',edit_quantity=edit_quantity, form_ordertype=form_ordertype)
 
 @core.route('/error', methods=['GET'])
 def error():
