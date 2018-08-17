@@ -46,6 +46,10 @@ def viewOrder(order_id):
     query = Orders.query.filter_by(id=order_id).first()
     return query
 
+def viewOrderType(id):
+    query = OrdersType.query.filter_by(id=id).first()
+    return query
+
 def addOrderType(**kwargs):
     """ Add an order type to the database"""
     db.session.close()
@@ -96,7 +100,23 @@ def selectOrderType(order_id):
     type_sum = listsum([n[1] for n in query])
     return query,type_sum
 
-def editQuantity(quantity_id):
+def editQuantity(quantity_id,**update):
     query = OrdersType.query.filter_by(id=quantity_id).first()
+    if update != {}:
+        db.session.query(OrdersType).filter(OrdersType.id == quantity_id).update(update)
+        db.session.commit()
     return query
 
+def deleteQuantity(quantity_id):
+    query = OrdersType.query.filter_by(id=quantity_id).first()
+    if query != None:
+        print('-query=-'*20)
+        print(query)
+        print(query.id)
+        print(query.oid)
+        db.session.delete(query)
+        db.session.commit()
+        oid = query.oid
+    else:
+        oid = 'None'
+    return oid

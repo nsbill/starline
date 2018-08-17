@@ -1,0 +1,28 @@
+{% extends 'base.html' %} 
+{% block title %}
+Удалить наименование
+{% endblock %}
+
+{% block content_titel %}
+Удалить наименование
+{% endblock %}
+{% block content_type_name %} 
+<div class="medium-12 cell">
+  <div class="grid-x grid-padding-x">
+    <div class="medium-12 cell">
+      <form method="POST">
+        <div class="grid-x grid-margin-x">
+          <div class="medium-5  medium-offset-7">
+          </div>
+          {{ ordertype.id }} | {{ ordertype.quantity }} | {{ ordertype.quantity_sum }} | {{ ordertype.oid }}
+            <div>
+              <input type="submit" class="button" value="Удалить">
+              <a href="{{ get_ablolute_url }}/core/orders/addtype/">Отмена</a>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
