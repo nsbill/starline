@@ -27,12 +27,15 @@
             <div class="cell small-12 medium-2 large-2">
               {{form_ordertype.quantity(value=ordertype.quantity)}}
             </div>
+            <div class="cell small-12 medium-1 large-1">
+              {{form_ordertype.units(value=ordertype.units)}}
+            </div>
             <div class="cell small-12 medium-2 large-2">
               {{form_ordertype.quantity_sum(value=ordertype.quantity_sum)}}
             </div>
             <div>
               <input type="submit" class="button" value="Сохранить">
-              <a href="{{ get_ablolute_url  }}/core/orders/addtype/{{ordertype.id}}">Отмена</a>		
+              <a href="{{ get_ablolute_url  }}/core/orders/addtype/{{ordertype.oid}}">Отмена</a>		
             </div>
           </div>
         </div>

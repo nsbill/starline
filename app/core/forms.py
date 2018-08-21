@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import Form,IntegerField, StringField, TextAreaField, BooleanField, PasswordField, FloatField
+from wtforms import Form,IntegerField, StringField, TextAreaField, BooleanField, PasswordField, FloatField, SelectField
 from wtforms.validators import InputRequired, Length, NumberRange
 from wtforms.fields.html5 import DateField, DateTimeField
 
@@ -23,9 +23,16 @@ class OrderForm(FlaskForm):
 
 class OrderTypeForm(FlaskForm):
     name = StringField('name', validators=[InputRequired()])
+#    units = StringField('units', validators=[InputRequired()])
+    units = SelectField(u'units', choices=[('шт.', 'шт.'),('ед.','ед.'), ('м', 'м'), ('м2', 'м2.'),('мл.','мл.'),('услуга','услуга'),])
     quantity = FloatField('quantity', validators=[InputRequired(), NumberRange(min=1,max=100000000, message=' Ошибка ввода: кол-во от 1 ед./шт.')])
     quantity_sum = FloatField('quantity_sum', validators=[InputRequired(), NumberRange(min=0,max=100000000, message='Ошибка ввода: сумма от 0 руб')])
 
+
+class PayForm(FlaskForm):
+    units = SelectField(u'units', choices=[('Наличный','Наличный'),('Безнал.','Безналичный'),])
+    pay = FloatField('pay')
+    pay_descr = TextAreaField('pay_descr')
 
 #class ClientForm(FlaskForm):
 #    uid = IntegerField('uid')

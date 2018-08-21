@@ -61,6 +61,7 @@ class OrdersType(db.Model):
     quantity_sum = db.Column('quantity_sum', db.Float(), nullable=False)
     oid = db.Column('oid',db.Integer(), db.ForeignKey('orders.id'))
     status_ord_id = db.Column('status_ord_id',db.Integer(), db.ForeignKey('status.id'))
+    units = db.Column('units', db.String(10))
     csrf_token = db.Column('token', db.String(91))
 
 class Status(db.Model):
@@ -77,16 +78,65 @@ class Status_pay(db.Model):
     name = db.Column('name', db.String(20), nullable=False)
 
 class Pays(db.Model):
+    """Оплаты"""
     __tablename__='pays'
     id = db.Column(db.Integer(), primary_key=True)
     oid = db.Column('oid',db.Integer(), db.ForeignKey('orders.id'))
-    oid_type_id = db.Column('oid_type_id',db.Integer(), db.ForeignKey('orders_type.id'))
+#    oid_type_id = db.Column('oid_type_id',db.Integer(), db.ForeignKey('orders_type.id'))
     pay = db.Column('pay', db.Float())
-    pay_date = db.Column('pay_date',db.DateTime())
-    prepayment = db.Column('prepayment', db.Float())
-    prepayment_date = db.Column('prepayment_date',db.DateTime())
+    pay_date = db.Column('pay_date',db.DateTime(), default=current_timestamp())
+#    prepayment = db.Column('prepayment', db.Float())
+#    prepayment_date = db.Column('prepayment_date',db.DateTime())
     status_pay_id = db.Column('status_pay_id', db.Integer(), db.ForeignKey('status_pay.id'))
-    descr_pay = db.Column('descr_pay', db.Text())
+    units = db.Column('utits', db.String(10))
+    pay_descr = db.Column('pay_descr', db.Text())
+
+class Incoming(db.Model):
+    """ Приходная накладная """
+    id = db.Column(db.Integer(), primary_key=True)
+    date = db.Column('date', db.DateTime())
+    number = db.Column('number', db.Integer(), nullable=False)
+    code = db.Column('code',db.Integer())
+    name = db.Column('name', db.String(255), nullable=False)
+    units = db.Column('utits', db.String(10))
+    quantity = db.Column('quantity', db.Float())
+    value = db.Column('value', db.Float())
+    amount = db.Column('amount', db.Float())
+    pay_info = db.Column('pay_info',db.Integer())
+    gid = db.Column('gid',db.Integer(), db.ForeignKey('group_product.id'))
+    sid = db.Column('sid',db.Integer(), db.ForeignKey('supplier.id'))
+
+class Expense(db.Model):
+    """Расходная накладная"""
+    id = db.Column(db.Integer(), primary_key=True)
+    date = db.Column('date', db.DateTime())
+    number = db.Column('number', db.Integer(), nullable=False)
+    code = db.Column('code',db.Integer())
+    name = db.Column('name', db.String(255), nullable=False)
+    units = db.Column('utits', db.String(10))
+    quantity = db.Column('quantity', db.Float())
+    value = db.Column('value', db.Float())
+    amount = db.Column('amount', db.Float())
+    pay_info = db.Column('pay_info',db.Integer())
+    gid = db.Column('gid',db.Integer(), db.ForeignKey('group_product.id'))
+    sid = db.Column('sid',db.Integer(), db.ForeignKey('supplier.id'))
+
+class GroupProduct(db.Model):
+    """Группы наименований"""
+    id = db.Column(db.Integer(), primary_key=True)
+    name = db.Column('name', db.String(50))
+
+class Supplier(db.Model):
+    """Поставщики """
+    id = db.Column(db.Integer(), primary_key=True)
+    name = db.Column('name', db.String(50))
+    phone = db.Column('phone', db.String(50))
+    address = db.Column('address', db.String(120))
+    descr = db.Column('descr', db.String(240))
+
+
+
+
 
 #class Fees(db.Model):
 #    pass

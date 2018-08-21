@@ -5,12 +5,12 @@ from flask_wtf import FlaskForm
 from datetime import datetime
 import sys
 
-from .forms import  OrderForm, OrderTypeForm
+from .forms import  OrderForm, OrderTypeForm, PayForm
 
 sys.path.insert(0, '/app/core')
 core = Blueprint('core',__name__, template_folder='templates')
 
-from orders import allOrders, infoOrder, addOrder, addOrderType, viewOrder, viewOrderType, selectOrderType, discountOrder, payOrder, editQuantity, deleteQuantity
+from orders import allOrders, infoOrder, addOrder, addOrderType, viewOrder, viewOrderType, selectOrderType, discountOrder, editQuantity, deleteQuantity, addpay_order, calcPayOrder, selectPaysOrder, calcPaysOrder, calcPayment
 
 
 @core.route('/', methods=['GET'])
@@ -55,8 +55,9 @@ def create():
 
 @core.route('/orders/addtype/<order_id>', methods=['POST','GET'])
 def addtype(order_id):
-    ''' Редактировать ордер '''
+    ''' Добавлять наименование '''
     view_order = viewOrder(order_id)
+    discount_sum = view_order.discount_sum
     form_ordertype = OrderTypeForm()
 #    data = [i for i in view_order]
     add = []
@@ -69,10 +70,19 @@ def addtype(order_id):
         add_order_type = addOrderType(**add_order_type)
         return redirect('core/orders/addtype/'+ order_id)
     sot = selectOrderType(order_id) # Выборка наименований заказа
-    discount = discountOrder(sot[1],view_order.discount, view_order.discount_sum) # Расчет скидки
+    orders_sum = sot[1]
+    discount = discountOrder(orders_sum,view_order.discount, discount_sum) # Расчет скидки
 
-    pays = payOrder(sot,discount) # Расчет суммы оплаты
-    return render_template('orders/addtype.html',view_order=view_order, form_ordertype=form_ordertype, sot=sot,discount=discount,pays=pays)
+    pays = calcPayOrder(sot,discount) # Расчет суммы оплат
+#    selectPays = selectPaysOrder(order_id)
+    selectPays = calcPaysOrder(order_id)
+    print(selectPays)
+    if selectPays:
+        pays_sum_order = selectPays[1]
+    else:
+        pays_sum_order = 0
+    calcOrderSum = calcPayment(orders_sum,discount,pays_sum_order)
+    return render_template('orders/addtype.html',view_order=view_order, form_ordertype=form_ordertype, sot=sot,discount=discount,pays=pays, selectPays=selectPays, calcOrderSum=calcOrderSum)
 
 
 @core.route('/orders/edittype/<quantity_id>', methods=['GET','POST'])
@@ -86,7 +96,10 @@ def edittype(quantity_id):
                 add.append((i.name, i.data))
         update = dict(add)
         edit_quantity = editQuantity(quantity_id,**update)
-        return redirect('core/orders/addtype/'+ str(edit_quantity.oid))
+        if edit_quantity == 'Done':
+            return redirect('core/orders/addtype/'+ str(ordertype.oid))
+        else:
+            return redirect('core/orders/all')
     return render_template('orders/edittype.html',form_ordertype=form_ordertype, ordertype=ordertype)
 
 
@@ -100,6 +113,20 @@ def deltype(quantity_id):
         return redirect('core/orders/addtype/'+ str(delete_quantity))
     return render_template('orders/deletetype.html', ordertype=ordertype)
 
+@core.route('/pays/add/<order_id>', methods=['GET','POST'])
+def pay_order(order_id):
+    form_pay = PayForm()
+    if request.method == 'POST':
+        if form_pay.validate_on_submit():
+            add = []
+            for i in form_pay:
+                print(i)
+                if i.data != None:
+                    add.append((i.name,i.data))
+            pay = dict(add)
+            add = addpay_order(order_id,**pay)
+        return redirect('core/orders/addtype/'+str(order_id))
+    return render_template('pays/addpay.html', form_pay=form_pay)
 
 @core.route('/error', methods=['GET'])
 def error():
