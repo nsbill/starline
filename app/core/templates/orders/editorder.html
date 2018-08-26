@@ -1,0 +1,16 @@
+<div>
+  <form method="POST" >
+    {{ form_discount.csrf_token_discount  }}
+    {{ render_field(form_discount.discount) }}
+    <input type="submit" class="button small" value="OK">
+  </form>
+  <form method="POST" >
+    {{ form_discount.csrf_token_discount_sum  }}
+    {{ render_field(form_discount.discount_sum) }}
+    <input type="submit" class="button small" value="OK">
+  </form>
+
+  <p>Скидка,% : {{ view_order.discount }}</p>
+
+  <p>Скидка,руб :  {{ view_order.discount_sum }}</p>
+</div>

@@ -5,12 +5,12 @@ from flask_wtf import FlaskForm
 from datetime import datetime
 import sys
 
-from .forms import  OrderForm, OrderTypeForm, PayForm
+from .forms import  OrderForm, OrderTypeForm, PayForm, DiscountForm
 
 sys.path.insert(0, '/app/core')
 core = Blueprint('core',__name__, template_folder='templates')
 
-from orders import allOrders, infoOrder, addOrder, addOrderType, viewOrder, viewOrderType, selectOrderType, discountOrder, editQuantity, deleteQuantity, addpay_order, calcPayOrder, selectPaysOrder, calcPaysOrder, calcPayment
+from orders import allOrders, infoOrder, addOrder, addOrderType, viewOrder, viewOrderType, selectOrderType, discountOrder, editQuantity, deleteQuantity, addpay_order, calcPayOrder, selectPaysOrder, calcPaysOrder, calcPayment, editDiscountOrder
 
 
 @core.route('/', methods=['GET'])
@@ -59,16 +59,34 @@ def addtype(order_id):
     view_order = viewOrder(order_id)
     discount_sum = view_order.discount_sum
     form_ordertype = OrderTypeForm()
+    form_discount = DiscountForm()
 #    data = [i for i in view_order]
-    add = []
-    if form_ordertype.validate_on_submit():
-        for i in form_ordertype:
-            if i.data != None:
-                add.append((i.name, i.data))
-        add_order_type= dict(add)
-        add_order_type['oid'] = int(order_id)
-        add_order_type = addOrderType(**add_order_type)
-        return redirect('core/orders/addtype/'+ order_id)
+    if request.method == 'POST':
+        if form_discount.data['csrf_token_discount'] == '':
+            form_discount.data['errors'] = ''
+        else:
+            if form_discount.validate_on_submit():
+                add = []
+                for i in form_discount:
+                    add.append((i.name, i.data))
+                update = dict(add)
+                update['csrf_token'] = update.pop('csrf_token_discount')
+                edit_discount = editDiscountOrder(order_id,**update)
+                if edit_discount == 'Done':
+                    return redirect('core/orders/addtype/'+ str(order_id))
+
+        if form_ordertype.data['csrf_token_ordertype'] == '':
+            form_ordertype.data['errors'] = ''
+        else:
+            if form_ordertype.validate_on_submit():
+                add = []
+                for i in form_ordertype:
+                    if i.data != None:
+                        add.append((i.name, i.data))
+                add_order_type= dict(add)
+                add_order_type['oid'] = int(order_id)
+                add_order_type = addOrderType(**add_order_type)
+                return redirect('core/orders/addtype/'+ order_id)
     sot = selectOrderType(order_id) # Выборка наименований заказа
     orders_sum = sot[1]
     discount = discountOrder(orders_sum,view_order.discount, discount_sum) # Расчет скидки
@@ -76,13 +94,12 @@ def addtype(order_id):
     pays = calcPayOrder(sot,discount) # Расчет суммы оплат
 #    selectPays = selectPaysOrder(order_id)
     selectPays = calcPaysOrder(order_id)
-    print(selectPays)
     if selectPays:
         pays_sum_order = selectPays[1]
     else:
         pays_sum_order = 0
     calcOrderSum = calcPayment(orders_sum,discount,pays_sum_order)
-    return render_template('orders/addtype.html',view_order=view_order, form_ordertype=form_ordertype, sot=sot,discount=discount,pays=pays, selectPays=selectPays, calcOrderSum=calcOrderSum)
+    return render_template('orders/addtype.html',view_order=view_order, form_ordertype=form_ordertype, sot=sot,discount=discount,pays=pays, selectPays=selectPays, calcOrderSum=calcOrderSum, form_discount=form_discount)
 
 
 @core.route('/orders/edittype/<quantity_id>', methods=['GET','POST'])
@@ -115,16 +132,15 @@ def deltype(quantity_id):
 
 @core.route('/pays/add/<order_id>', methods=['GET','POST'])
 def pay_order(order_id):
-    form_pay = PayForm()
-    if request.method == 'POST':
-        if form_pay.validate_on_submit():
-            add = []
-            for i in form_pay:
-                print(i)
-                if i.data != None:
-                    add.append((i.name,i.data))
-            pay = dict(add)
-            add = addpay_order(order_id,**pay)
+    form_pay = PayForm(request.form)
+    if request.method == 'POST' and form_pay.validate():
+        add = []
+        for i in form_pay:
+            print(i)
+            if i.data != None:
+                add.append((i.name,i.data))
+        pay = dict(add)
+        add = addpay_order(order_id,**pay)
         return redirect('core/orders/addtype/'+str(order_id))
     return render_template('pays/addpay.html', form_pay=form_pay)
 

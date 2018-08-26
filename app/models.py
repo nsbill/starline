@@ -62,7 +62,7 @@ class OrdersType(db.Model):
     oid = db.Column('oid',db.Integer(), db.ForeignKey('orders.id'))
     status_ord_id = db.Column('status_ord_id',db.Integer(), db.ForeignKey('status.id'))
     units = db.Column('units', db.String(10))
-    csrf_token = db.Column('token', db.String(91))
+    csrf_token_ordertype = db.Column('token', db.String(91))
 
 class Status(db.Model):
     __tablename__='status'

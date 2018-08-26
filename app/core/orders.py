@@ -57,7 +57,7 @@ def listsum(n):
 
 def discountOrder(summa,discount_percent,discount_sum):
     """Расчет скидки %"""
-    if discount_percent == '100' or discount_sum == summa:
+    if discount_percent == 100 or discount_sum >= summa:
         return summa
     if summa != 0:
         if discount_percent != 0:
@@ -68,14 +68,19 @@ def discountOrder(summa,discount_percent,discount_sum):
         discount = discount_sum
     return discount
 
+def editDiscountOrder(order_id,**update):
+    """Редактировать discount """
+    if update != {}:
+        db.session.query(Orders).filter(Orders.id == order_id).update(update)
+        db.session.commit()
+    return 'Done'
+
 def calcPayOrder(order,discount):
     """ Расчет оплаты с учетом скидки """
-    print('-calcPayOrder-'*2)
-    print(order)
-    if order:
-        data = order[1] - discount
-    else:
+    if order[1] <= 0:
         data = order[1]
+    else:
+        data = order[1] - discount
     return data
 
 
@@ -100,7 +105,11 @@ def calcPayment(orders_sum,discount,pays_sum_order):
     if orders_sum == 0:
         return 0
     data = orders_sum - discount - pays_sum_order
-    return data
+    if data >= 0:
+        calc = {'orders_sum': orders_sum, 'discount': discount, 'pays_sum_order': pays_sum_order, 'surrender': 0, 'remainder': data }
+    else:
+        calc = {'orders_sum': orders_sum, 'discount': discount, 'pays_sum_order': pays_sum_order, 'surrender': data, 'remainder': 0 }
+    return calc
 
 def selectOrderType(order_id):
     """Выборка по order_id и подсчет суммы заказа """

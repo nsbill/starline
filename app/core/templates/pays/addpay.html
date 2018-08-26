@@ -9,28 +9,25 @@
 {% endblock %}
 
 {% block content %}
+{% from "_formhelpers.html" import render_field %}
   <div class="grid-x grid-padding-x">
     <div class="medium-12 cell">
     <form method="POST">
       {{ form_pay.csrf_token  }}
       <div class="grid-x grid-margin-x">
         <div class="medium-5  medium-offset-7">
-              {% for error in form_pay.errors %}
-                <li style="color:red;">{{ error }}</li>
-              {% endfor %}
-        </div>
-              <div class="cell small-12 medium-2 large-2">
-                  {{form_pay.units}}
-              </div>
-              <div class="cell small-12 medium-2 large-2">
-                  {{form_pay.pay(placeholder="Сумма платежа")}}
-              </div>
-              <div class="cell small-12 medium-2 large-2">
-                  {{form_pay.pay_descr(placeholder="Описание")}} 
-              </div>
-              <div>
-                  <input type="submit" class="button" value="Внести оплату">
-              </div>
+            <div class="cell small-12 medium-2 large-2">
+                {{form_pay.units}}
+            </div>
+            <div class="cell small-12 medium-2 large-2">
+              {{ render_field(form_pay.pay)  }}
+            </div>
+            <div class="cell small-12 medium-2 large-2">
+                {{form_pay.pay_descr(placeholder="Описание")}} 
+            </div>
+            <div>
+                <input type="submit" class="button" value="Внести оплату">
+            </div>
           </div>
       </div>
     </form>

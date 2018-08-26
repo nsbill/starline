@@ -9,6 +9,7 @@
 {% endblock %}
 
 {% block content %}
+{% from "_formhelpers.html" import render_field %}
 <div class="grid-x grid-padding-x">
   <div class="medium-12 cell">
     <div class="grid-x grid-padding-x">
@@ -50,11 +51,8 @@
           <div class="grid-x grid-padding-x">
             <div class="small-12 medium-6 medium-offset-1 callout secondary">
               <div>
-                Скидка,% : {{ view_order.discount }}
-              </div>
-                Скидка,руб :  {{ view_order.discount_sum }}
-              <div>
-                С фонда:  0 руб.
+                <p>Скидка,% : {{ view_order.discount }}</p>
+                <p>Скидка,руб :  {{ view_order.discount_sum }}</p>
               </div>
             </div>
             <div class="small-12 medium-6 medium-offset-1 callout secondary">
@@ -73,7 +71,7 @@
               <div>
                 {% if selectPays %}
                 <b>Предоплата:</b>
-                  {{ selectPays[1] }} руб.
+                  {{ selectPays[1]|round(2)}} руб.
                 {% endif %}
                 <form method="POST">
                   <a class="button success small" href="/core/pays/add/{{ view_order.id }}">Внести оплату</a>
@@ -81,18 +79,20 @@
               </div>
               <hr>
               <div>
+                {% if calcOrderSum %}
                 {% if selectPays %}
                 <b>Оплачено:</b>
-                  {{ selectPays[1] }} руб.
+                  {{ selectPays[1] |round(2) }} руб.
                 {% endif %}
-                <b>Остаток:</b> {{ calcOrderSum }}  руб.
+                <b>Остаток:</b> {{ calcOrderSum.remainder |round(2)}}  руб.
               </div>
               <div>
-                <b>Итог:</b> Заказ не оплачен
+                <b>Итог:</b> {{ selectPays[1] }} руб. | Статус заказа
               </div>
               <div>
-                <b> Сдача:</b> 0  руб.
+                <b> Сдача:</b> {{ calcOrderSum.surrender |round(2)}}  руб.
               </div>
+                {% endif %}
             </div>
           </div>
       </div>
@@ -103,7 +103,7 @@
   <div class="grid-x grid-padding-x">
     <div class="medium-12 cell">
     <form method="POST">
-      {{ form_ordertype.csrf_token  }}
+      {{ form_ordertype.csrf_token_ordertype  }}
       <div class="grid-x grid-margin-x">
         <div class="medium-5  medium-offset-7">
               {% for error in form_ordertype.quantity.errors %}
