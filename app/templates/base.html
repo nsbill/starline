@@ -33,13 +33,12 @@
                 <ul class="submenu menu vertical" data-submenu>
                   <li><a href="{{ get_absolute_url }}/core/orders/create">Создать</a></li>
                   <li><a href="{{ get_absolute_url }}/core/orders/all">Просмотреть</a></li>
-                  <li><a href="{{ get_absolute_url }}/core/orders/delete">Удалить</a></li>
                 </ul>
               </li>
               <li><a href="/core/error">Отчеты</a>
                 <ul class="submenu menu vertical" data-submenu>
-                  <li><a href="{{ get_absolute_url }}/core/pays">Приход</a></li>
-                  <li><a href="{{ get_absolute_url }}/core/bills">Расход</a></li>
+                  <li><a href="{{ get_absolute_url }}/core/pays/allpays">Оплаты</a></li>
+                  <li><a href="{{ get_absolute_url }}/core/expense/allexpenses">Затраты</a></li>
                 </ul>
               </li>
               <li><a href="/core/error"></a></li>
@@ -62,6 +61,13 @@
     <script src="{{ url_for('static', filename='js/vendor/jquery.js') }}"></script>
     <script src="{{ url_for('static', filename='js/vendor/what-input.js') }}"></script>
     <script src="{{ url_for('static', filename='js/vendor/foundation.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script> 
+    <script src="{{ url_for('static', filename='js/calendar_ru.js') }}"></script>
+    
+    <script>
+    $( function() {
+      $( "#datepicker"  ).datepicker();
+   }  );
+    </script>
   </body>
 </html>

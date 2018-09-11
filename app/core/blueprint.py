@@ -2,15 +2,17 @@ from flask import Blueprint
 from flask import render_template,request,redirect
 from flask import url_for
 from flask_wtf import FlaskForm
-from datetime import datetime
+#import datetime
+from datetime import datetime, date, timedelta
+from time import strptime
 import sys
-
-from .forms import  OrderForm, OrderTypeForm, PayForm, DiscountForm
+from modules.mod_date import ModDatetime
+from .forms import  OrderForm, OrderTypeForm, PayForm, DiscountForm, EditOrderForm 
 
 sys.path.insert(0, '/app/core')
 core = Blueprint('core',__name__, template_folder='templates')
 
-from orders import allOrders, infoOrder, addOrder, addOrderType, viewOrder, viewOrderType, selectOrderType, discountOrder, editQuantity, deleteQuantity, addpay_order, calcPayOrder, selectPaysOrder, calcPaysOrder, calcPayment, editDiscountOrder
+from orders import allOrders, infoOrder, addOrder, addOrderType, viewOrder, viewOrderType, selectOrderType, discountOrder, editQuantity, deleteQuantity, addpay_order, calcPayOrder, selectPaysOrder, calcPaysOrder, calcPayment, editDiscountOrder, allPays, allDatePays
 
 
 @core.route('/', methods=['GET'])
@@ -101,9 +103,29 @@ def addtype(order_id):
     calcOrderSum = calcPayment(orders_sum,discount,pays_sum_order)
     return render_template('orders/addtype.html',view_order=view_order, form_ordertype=form_ordertype, sot=sot,discount=discount,pays=pays, selectPays=selectPays, calcOrderSum=calcOrderSum, form_discount=form_discount)
 
+@core.route('/orders/editorder/<order_id>', methods=['GET','POST'])
+def editorder(order_id):
+    """Редактирование заказчика"""
+    order = viewOrder(order_id)
+    form_order = EditOrderForm()
+    upd = []
+    if request.method == 'POST':
+        if form_order.validate_on_submit():
+            for i in form_order:
+                upd.append((i.name, i.data))
+        update = dict(upd)
+        print('-'*30)
+        print(update)
+        upd_order = editDiscountOrder(order_id,**update)
+        if upd_order == 'Done':
+            return redirect('core/orders/addtype/'+str(order_id))
+        else:
+            return redirect('core/orders/all')
+    return render_template('orders/editorder.html',form_order=form_order, order=order)
 
 @core.route('/orders/edittype/<quantity_id>', methods=['GET','POST'])
 def edittype(quantity_id):
+    """Редактирование наименование"""
     form_ordertype = OrderTypeForm()
     ordertype = viewOrderType(quantity_id)
     add = []
@@ -122,6 +144,7 @@ def edittype(quantity_id):
 
 @core.route('/orders/deltype/<quantity_id>', methods=['GET','POST'])
 def deltype(quantity_id):
+    """Удаление наименования"""
     ordertype = viewOrderType(quantity_id)
     if request.method == 'POST':
         delete_quantity = deleteQuantity(quantity_id)
@@ -130,19 +153,67 @@ def deltype(quantity_id):
         return redirect('core/orders/addtype/'+ str(delete_quantity))
     return render_template('orders/deletetype.html', ordertype=ordertype)
 
+
+@core.route('/pays/allpays', methods=['GET','POST'])
+def allpays():
+    """Оплаты"""
+    data = allPays()
+    day = {}
+    day['dmyw'] = date.today().strftime('01-%m-%Y')
+    day['dmyf'] = date.today().strftime('%d-%m-%Y')
+
+#    def last_day_of_month(date):
+#        ''' last_day_of_month(datetime.datetime(2018,9,11)) '''
+#        if date.month == 12:
+#            return date.replace(day=31)
+#        date = date.replace(month=date.month+1, day=1) - timedelta(days=1)
+#        return date.strftime('%d-%m-%Y')
+#
+#    def reverse_date(d):
+#        '''Разварачивает дату с ДД-ММ-ГГГГ на ГГГГ-ММ-ДД'''
+#        try:
+#            n = strptime(d, '%d-%m-%Y')
+#            date = str(n.tm_year)+'-'+str(n.tm_mon)+'-'+str(n.tm_mday)
+#            return date
+#        except:
+##            date = '-'.join(d.split('-')[::-1])
+#            date = ''
+#            return date
+    if request.method == 'POST':
+        moddatetime= ModDatetime()
+        date_with = moddatetime.reverse_date(request.form['date_with'])
+        date_from = moddatetime.reverse_date(request.form['date_from'])
+        data = allDatePays(date_with,date_from)
+        day['dmyw']=request.form['date_with']
+        day['dmyf']=request.form['date_from']
+#        day['mm'] = last_day_of_month(date.today())
+        return render_template('pays/allpays.html', allpays=data, day=day)
+    return render_template('pays/allpays.html', allpays=data, day=day)
+
+
 @core.route('/pays/add/<order_id>', methods=['GET','POST'])
 def pay_order(order_id):
+    """Добавление платежа"""
     form_pay = PayForm(request.form)
     if request.method == 'POST' and form_pay.validate():
         add = []
         for i in form_pay:
-            print(i)
             if i.data != None:
                 add.append((i.name,i.data))
         pay = dict(add)
         add = addpay_order(order_id,**pay)
         return redirect('core/orders/addtype/'+str(order_id))
     return render_template('pays/addpay.html', form_pay=form_pay)
+
+@core.route('/expense/allexpenses', methods=['GET','POST'])
+def allexpenses():
+    """Расходы"""
+    return render_template('expenses/allexpense.html')
+
+@core.route('/expense/addexpense', methods=['GET','POST'])
+def addexpense():
+    """Создание позиции расходов"""
+    return render_template('expenses/addexpense.html')
 
 @core.route('/error', methods=['GET'])
 def error():

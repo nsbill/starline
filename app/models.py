@@ -88,7 +88,7 @@ class Pays(db.Model):
 #    prepayment = db.Column('prepayment', db.Float())
 #    prepayment_date = db.Column('prepayment_date',db.DateTime())
     status_pay_id = db.Column('status_pay_id', db.Integer(), db.ForeignKey('status_pay.id'))
-    units = db.Column('utits', db.String(10))
+    units = db.Column('units', db.String(10))
     pay_descr = db.Column('pay_descr', db.Text())
 
 class Incoming(db.Model):

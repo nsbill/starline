@@ -23,21 +23,50 @@
               {{ view_order.create_date.strftime('%Y-%m-%d %H:%M:%S') }}
             </div>
             <div class="small-12 medium-12 callout secondary">
-              <label>Заказчик:
-                {{ view_order.client }}
-              </label>
-              <label>Телефон:
-                {{ view_order.phone}}
-              </label>
-                <ul>
-                <hr>
-                {% for pay in selectPays[0] %}
-                  <li> {{ pay.id }} | {{ pay.units }} | {{ pay.pay_date.strftime('%Y-%m-%d %H:%M:%S') }}</li>
-                  <li> Сумма платежа: {{ pay.pay }} руб. </li>
-                  <li> Описание: {{ pay.pay_descr }}</li>
-                <hr>
+              <div class="grid-x grid-padding-x">
+                <div class="small-12 medium-6 medium-offset-1 callout secondary">
+                  <label>Заказчик:
+                    {{ view_order.client }}
+                  </label>
+                  <label>Телефон:
+                    {{ view_order.phone}}
+                  </label>
+                <a class="button success small" href="/core/orders/editorder/{{ view_order.id  }}">Редактирование</a>
+                </div>
+                <div class="small-12 medium-6 medium-offset-1 callout secondary">
+                  <div>
+                  <label>
+                  Скидка,% : {{ view_order.discount }}
+                  </label>
+                  <label>
+                  Скидка,руб :  {{ view_order.discount_sum }}
+                  </label>
+                  </div>
+                </div>
+              </div>
+                <b>Оплаты:</b>
+                <table class="stack">
+                  <thead>
+                    <tr>
+                      <th width="20">ID</th>
+                      <th width="70">Вид платежа</th>
+                      <th width="70">Дата</th>
+                      <th width="70">Сумма платежа</th>
+                      <th width="100">Описание</th>
+                    </tr>
+                  </thead>
+                  {% for pay in selectPays[0] %}
+                  <tbody>
+                    <tr>
+                      <td>{{ pay.id }}</td>
+                      <td>{{ pay.units }}</td>
+                      <td>{{ pay.pay_date.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                      <td>{{ pay.pay }} руб.</td>
+                      <td>{{ pay.pay_descr }}</td>
+                    </tr>
+                  </tbody>
                 {% endfor %}
-                </ul>
+                </table>
             </div>
           </div>
         </div>
@@ -51,8 +80,6 @@
           <div class="grid-x grid-padding-x">
             <div class="small-12 medium-6 medium-offset-1 callout secondary">
               <div>
-                <p>Скидка,% : {{ view_order.discount }}</p>
-                <p>Скидка,руб :  {{ view_order.discount_sum }}</p>
               </div>
             </div>
             <div class="small-12 medium-6 medium-offset-1 callout secondary">
@@ -87,7 +114,9 @@
                 <b>Остаток:</b> {{ calcOrderSum.remainder |round(2)}}  руб.
               </div>
               <div>
-                <b>Итог:</b> {{ selectPays[1] }} руб. | Статус заказа
+                {% if selectPays[1] %}
+                  <b>Итог:</b> {{ selectPays[1]|round(2) }} руб. | Статус заказа
+                {% endif %}
               </div>
               <div>
                 <b> Сдача:</b> {{ calcOrderSum.surrender |round(2)}}  руб.

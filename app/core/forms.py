@@ -46,6 +46,9 @@ class PayForm(FlaskForm):
     pay = FloatField('pay', validators=[InputRequired(), NumberRange(min=0, message='Ошибка: Hекоректный ввод данных')], render_kw={'placeholder': 'Сумма платежа'})
     pay_descr = TextAreaField('pay_descr')
 
+#class CalendarForm(FlaskForm):
+#    data_with = StringField('data_with')
+#    data_from = StringField('data_from')
 
 class DiscountForm(FlaskForm):
     class Meta:
@@ -53,6 +56,33 @@ class DiscountForm(FlaskForm):
 
     discount = IntegerField('discount', render_kw={'placeholder': u'Скидка, до 100%'})
     discount_sum = IntegerField('discount_sum',render_kw={'placeholder': u'Скидка, от 0 руб.'})
+
+    def validate_discount(FlaskForm, field):
+        if type(field.data).__name__ != 'int':
+            raise ValidationError('Ошибка: введите число от 0 до 100')
+        else:
+            if int(field.data) < 0 or int(field.data) > 100:
+                raise ValidationError('Ошибка: скидка от 0 до 100%')
+
+class EditOrderForm(FlaskForm):
+    ord_num = StringField('ord_num', validators=[InputRequired()])
+#    create_date = DateTimeField('create_date', validators=[InputRequired()])
+#    complete_date = DateTimeField('complete_date', validators=[InputRequired()], format='%Y-%m-%d mm:ss')
+    client = StringField('client', validators=[InputRequired()])
+    phone = StringField('phone', validators=[InputRequired()])
+    discount = IntegerField('discount', render_kw={'placeholder': u'Скидка, до 100%'})
+    discount_sum = IntegerField('discount_sum',render_kw={'placeholder': u'Скидка, от 0 руб.'})
+#    discount = IntegerField('discount',default=0,validators=[InputRequired(), NumberRange(min=0,max=100, message=' Ошибка: скидка от 0 до 100%')])
+#    discount_sum = IntegerField('discount_sum',default=0,validators=[InputRequired(), NumberRange(min=0, message=' Ошибка: скидка от 0 руб.')])
+#    orders_type_id = IntegerField('orders_type_id')
+#    status_id = IntegerField('status_id')
+    descr = TextAreaField('descr')
+#    status_ord_id = IntegerField('status_ord_id')
+#    pay = FloatField('pay', validators=[InputRequired()])
+#    pay_date = DateTimeField('pay_date', validators=[InputRequired()])
+#    prepayment = FloatField('prepayment', validators=[InputRequired()])
+#    prepayment_date = DateTimeField('prepayment_date', validators=[InputRequired()])
+#    descr_pay = TextAreaField('descr_pay', validators=[InputRequired()])
 
     def validate_discount(FlaskForm, field):
         if type(field.data).__name__ != 'int':

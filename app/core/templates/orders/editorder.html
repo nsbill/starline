@@ -1,16 +1,62 @@
+{% extends 'base.html' %} 
+
+{% block title %}
+	Настройка заказчика
+{% endblock %}
+
+{% block content_titel %}
+  Настройка заказчика
+{% endblock %}
+
+{% block content %}
+{% from "_formhelpers.html" import render_field %}
+<form method="POST" >
+  {{ form_order.csrf_token  }}
+<div class="grid-x grid-padding-x">
+  <div class="medium-12 cell">
+    <div class="grid-x grid-padding-x">
+      <div class="medium-6 cell">
+        <div class="medium-12">
+          <div class="grid-x grid-padding-x">
+            <div class="medium-6 medium-offset-1">
+              <label>Заказ: №</label> {{ form_order.ord_num(value=order.ord_num) }}
+            </div>
+            <div class="medium-4">
+              {{ order.create_date.strftime('%Y-%m-%d %H:%M:%S') }}
+            </div>
+            <div class="small-12 medium-12 callout secondary">
+              <div class="grid-x grid-padding-x">
+                <div class="small-12 medium-6 medium-offset-1 callout secondary">
+                  <label>Заказчик:
+                    {{ form_order.client(value=order.client) }}
+                  </label>
+                  <label>Телефон:
+                    {{ form_order.phone(value=order.phone) }}
+                  </label>
+                </div>
+                <div class="small-12 medium-6 medium-offset-1 callout secondary">
+                  <label>
+                    Скидка,% : {{ form_order.discount(value=order.discount)}}
+                  </label>
+                  <label>
+                  Скидка,руб : {{ form_order.discount_sum(value=order.discount_sum)}}
+                  </label>
+                </div>
+              </div>
+              <div>
+                <p><textarea rows="2" cols="45" name="descr">{{ order.descr }}</textarea></p>
+              </div>
+              <div class="small-12 medium-offset-8">
+                <input type="submit" class="button small" value="OK">
+                <a href="{{ get_ablolute_url   }}/core/orders/addtype/{{order.id}}">Отмена</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 <div>
-  <form method="POST" >
-    {{ form_discount.csrf_token_discount  }}
-    {{ render_field(form_discount.discount) }}
-    <input type="submit" class="button small" value="OK">
   </form>
-  <form method="POST" >
-    {{ form_discount.csrf_token_discount_sum  }}
-    {{ render_field(form_discount.discount_sum) }}
-    <input type="submit" class="button small" value="OK">
-  </form>
-
-  <p>Скидка,% : {{ view_order.discount }}</p>
-
-  <p>Скидка,руб :  {{ view_order.discount_sum }}</p>
 </div>
+{% endblock %}

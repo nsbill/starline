@@ -136,6 +136,20 @@ def deleteQuantity(quantity_id):
         oid = 'None'
     return oid
 
+def allPays():
+    """Выборка всех оплат"""
+    query = Pays.query.all()
+    return query
+
+def allDatePays(date_with, date_from):
+    """Выборка всех оплат по дате"""
+    if date_with == '' or date_from == '':
+        query = ''
+    else:
+#        query = db.session.query(Pays).filter(Pays.pay_date > date_with).filter(Pays.pay_date >= date_from).all()
+        query = db.session.query(Pays).filter(db.func.date(Pays.pay_date) >= date_with).filter(db.func.date(Pays.pay_date) <= date_from).all()
+    return query
+
 def addpay_order(order_id, **value):
     """ Add an pay to the database"""
     db.session.close()

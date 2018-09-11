@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  Оплаты
+{% endblock %}
+
+{% block content_titel %}
+  Оплаты  
+{% endblock %} 
+
+{% block content %}
+<h3>Оплаты</h3>
+<div class="medium-6 cell callout secondary">
+    <div class="grid-content">
+      <form method="POST">
+          <div class="grid-x grid-margin-x">
+              <div class="medium-2 cell">
+                <input type="text" name="date_with" value="{{ day.dmyw }}" onfocus="this.select();lcs(this)"
+                      onclick="event.cancelBubble=true;this.select();lcs(this)">
+              </div>
+          <div class="medium-2 cell"> 
+            <input type="text" name="date_from" value="{{ day.dmyf }}" onfocus="this.select();lcs(this)"
+                  onclick="event.cancelBubble=true;this.select();lcs(this)">
+          </div>
+                <input type="submit" class="button" value="Submit">
+       </form>
+   </div>
+</div>
+<table>
+  <thead>
+    <tr>
+      <th>Дата</th>
+      <th>Количество</th>
+      <th>Сумма</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>2000-01-01</td>
+      <td>3</td>
+      <td>1000000.32 руб.</td>
+    </tr>
+    <tr>
+      <td>2000-01-02</td>
+      <td>23</td>
+      <td>30000.40 руб.</td>
+    </tr>
+    <tr>
+      <td>2000-01-03</td>
+      <td>35</td>
+      <td>4000000.50 руб.</td>
+    </tr>
+  </tbody>
+</table>
+
+<table>
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Дата создания</th>
+      <th>ID_Order</th>
+      <th>Вид оплаты</th>
+      <th>Сумма</th>
+      <th>Описание</th>
+    </tr>
+  </thead>
+  <tbody>
+{% for pay in allpays %}
+    <tr>
+      <td>{{ pay.id }}</td>
+      <td>{{ pay.pay_date.strftime('%Y-%m-%d %H:%M:%S')}}</td>
+      <td><a href="{{ get_ablolute_url   }}/core/orders/addtype/{{ pay.oid }}">{{ pay.oid }}</td>
+      <td>{{ pay.units }}</td>
+      <td>{{ pay.pay }}</td>
+      <td>{{ pay.pay_descr }}</td>
+    </tr>
+{% endfor %}
+  </tbody>
+</table>
+{% endblock %}
