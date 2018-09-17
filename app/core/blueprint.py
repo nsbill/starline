@@ -13,8 +13,9 @@ sys.path.insert(0, '/app/core')
 sys.path.insert(0,'/app/modules')
 core = Blueprint('core',__name__, template_folder='templates')
 
-from orders import allOrders, infoOrder, addOrder, addOrderType, viewOrder, viewOrderType, selectOrderType, discountOrder, editQuantity, deleteQuantity, addpay_order, calcPayOrder, selectPaysOrder, calcPaysOrder, calcPayment, editDiscountOrder, allPays, allDatePays
+from orders import allOrders, infoOrder, addOrder, addOrderType, viewOrder, viewOrderType, selectOrderType, discountOrder, editQuantity, deleteQuantity, editDiscountOrder
 
+from pays.pays import addpay_order, calcPayOrder, selectPaysOrder, calcPaysOrder, calcPayment, allPays, allDatePays
 from expense.expense import allExpenseCompany, addExpenseCompany, viewExpenseCompanyId, editExpenseCompanyId, deleteExpenseCompanyId
 
 @core.route('/', methods=['GET'])
@@ -150,13 +151,14 @@ def edittype(quantity_id):
 @core.route('/orders/deltype/<quantity_id>', methods=['GET','POST'])
 def deltype(quantity_id):
     """Удаление наименования"""
+    form_ordertype = OrderTypeForm()
     ordertype = viewOrderType(quantity_id)
     if request.method == 'POST':
         delete_quantity = deleteQuantity(quantity_id)
         if delete_quantity == 'None':
             return redirect('/')
         return redirect('core/orders/addtype/'+ str(delete_quantity))
-    return render_template('orders/deletetype.html', ordertype=ordertype)
+    return render_template('orders/deletetype.html', form_ordertype=form_ordertype, ordertype=ordertype)
 
 
 @core.route('/pays/allpays', methods=['GET','POST'])

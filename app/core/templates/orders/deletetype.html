@@ -12,14 +12,22 @@
     <div class="medium-12 cell">
       <form method="POST">
         <div class="grid-x grid-margin-x">
-          <div class="medium-5  medium-offset-7">
-          </div>
-          {{ ordertype.id }} | {{ ordertype.quantity }} | {{ ordertype.quantity_sum }} | {{ ordertype.oid }}
+            <div class="cell small-12 medium-7 large-7">
+              {{form_ordertype.name(value=ordertype.name, readonly="readonly")}}
+            </div>
+            <div class="cell small-12 medium-2 large-2">
+              {{form_ordertype.quantity(value=ordertype.quantity, readonly="readonly")}}
+            </div>
+            <div class="cell small-12 medium-1 large-1">
+              {{form_ordertype.units(value=ordertype.units, readonly="readonly")}}
+            </div>
+            <div class="cell small-12 medium-2 large-2">
+              {{form_ordertype.quantity_sum(value=ordertype.quantity_sum, readonly="readonly")}}
+            </div>
             <div>
               <input type="submit" class="button" value="Удалить">
-              <a href="{{ get_ablolute_url }}/core/orders/addtype/">Отмена</a>
+              <a href="{{ get_ablolute_url }}/core/orders/addtype/{{ ordertype.oid }}">Отмена</a>
             </div>
-          </div>
         </div>
       </form>
     </div>
