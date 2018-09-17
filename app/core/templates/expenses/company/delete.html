@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block title %}
+ Расходы фирмы 
+{% endblock %}
+
+{% block content_titel %}
+  Расходы офиса
+{% endblock %} 
+
+{% block content %}
+{% from "_formhelpers.html" import render_field %}
+  <div class="grid-x grid-padding-x">
+    <div class="medium-12 cell">
+    <form method="POST">
+      {{ form.csrf_token  }}
+      <div class="grid-x grid-margin-x">
+        <div class="medium-5  medium-offset-2">
+        <h3>Удалить данную позицию</h3>
+            <div class="cell small-12 medium-2 large-2">
+                {{form.name(value=data.name,readonly="readonly")}}
+            </div>
+            <div class="cell small-12 medium-2 large-2">
+              {% if form.quantity_sum.errors %}
+                {{ form.quantity_sum.errors }}
+              {% endif %}
+              {{ form.quantity_sum(value=data.quantity_sum,readonly="readonly") }}
+            </div>
+            <div class="cell small-12 medium-2 large-2">
+                {{ form.descr(value=data.descr,readonly="readonly") }} 
+            </div>
+            <div>
+                <input type="submit" class="button" value="Удалить">
+                <a href="{{ get_ablolute_url  }}/core/expense/company/all">Отмена</a>		
+            </div>
+          </div>
+      </div>
+    </div>
+  </div>
+</form>
+{% endblock %}
+
