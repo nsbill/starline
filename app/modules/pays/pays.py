@@ -5,6 +5,48 @@ import sys
 sys.path.insert(0, '/app/db')
 sys.path.insert(0, '/app/core')
 
+def allPays():
+    """Выборка всех оплат"""
+    query = Pays.query.all()
+    return query
+
+def allDatePays(date_with, date_from):
+    """Выборка всех оплат по дате"""
+    if date_with == '' or date_from == '':
+        query = ''
+    else:
+        query = db.session.query(Pays).filter(db.func.date(Pays.pay_date) >= date_with).filter(db.func.date(Pays.pay_date) <= date_from).all()
+    return query
+
+def viewPay(id):
+    """ Просмотр платежа по ID"""
+    query = Pays.query.filter_by(id=id).first()
+    return query
+
+def addpay_order(order_id, **value):
+    """ Add an pay to the database"""
+    db.session.close()
+    item = ModPays()
+    data = item.add(**value)
+    if data['csrf_token']:
+        data.pop('csrf_token') # Удалить csrf_token с словаря
+        data['oid'] = order_id
+        addpay = Pays(**data)
+        db.session.add(addpay)
+        db.session.commit()
+    return 'Done'
+
+def deletePay(id):
+    """ Удалить оплату по ID"""
+    query = Pays.query.filter_by(id=id).first()
+    if query != None:
+        db.session.delete(query)
+        db.session.commit()
+        id = query.id
+    else:
+        id = 'None'
+    return id
+
 def calcPayOrder(order,discount):
     """ Расчет оплаты с учетом скидки """
     if order[1] <= 0:
@@ -38,29 +80,3 @@ def calcPayment(orders_sum,discount,pays_sum_order):
     else:
         calc = {'orders_sum': orders_sum, 'discount': discount, 'pays_sum_order': pays_sum_order, 'surrender': data, 'remainder': 0 }
     return calc
-
-def allPays():
-    """Выборка всех оплат"""
-    query = Pays.query.all()
-    return query
-
-def allDatePays(date_with, date_from):
-    """Выборка всех оплат по дате"""
-    if date_with == '' or date_from == '':
-        query = ''
-    else:
-        query = db.session.query(Pays).filter(db.func.date(Pays.pay_date) >= date_with).filter(db.func.date(Pays.pay_date) <= date_from).all()
-    return query
-
-def addpay_order(order_id, **value):
-    """ Add an pay to the database"""
-    db.session.close()
-    item = ModPays()
-    data = item.add(**value)
-    if data['csrf_token']:
-        data.pop('csrf_token') # Удалить csrf_token с словаря
-        data['oid'] = order_id
-        addpay = Pays(**data)
-        db.session.add(addpay)
-        db.session.commit()
-    return 'Done'

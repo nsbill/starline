@@ -1,9 +1,5 @@
 from app import db
-
-#from modules.orders.mod_orders import ModOrders
-#from modules.pays.mod_pays import ModPays
 import sys
-#import time
 sys.path.insert(0, '/app/db')
 sys.path.insert(0, '/app/core')
 sys.path.insert(0,'/app/modules/expense')

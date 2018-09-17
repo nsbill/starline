@@ -10,13 +10,14 @@ from modules.mod_date import ModDatetime
 from .forms import OrderForm, OrderTypeForm, PayForm, DiscountForm, EditOrderForm, ExpenseCompanyForm
 
 sys.path.insert(0, '/app/core')
-sys.path.insert(0,'/app/modules')
+sys.path.insert(0,'/app/modules/orders')
+sys.path.insert(0,'/app/modules/pays')
+sys.path.insert(0,'/app/modules/expense')
 core = Blueprint('core',__name__, template_folder='templates')
 
 from orders import allOrders, infoOrder, addOrder, addOrderType, viewOrder, viewOrderType, selectOrderType, discountOrder, editQuantity, deleteQuantity, editDiscountOrder
-
-from pays.pays import addpay_order, calcPayOrder, selectPaysOrder, calcPaysOrder, calcPayment, allPays, allDatePays
-from expense.expense import allExpenseCompany, addExpenseCompany, viewExpenseCompanyId, editExpenseCompanyId, deleteExpenseCompanyId
+from pays import addpay_order, calcPayOrder, selectPaysOrder, calcPaysOrder, calcPayment, allPays, allDatePays, viewPay, deletePay
+from expense import allExpenseCompany, addExpenseCompany, viewExpenseCompanyId, editExpenseCompanyId, deleteExpenseCompanyId
 
 @core.route('/', methods=['GET'])
 def index():
@@ -29,6 +30,8 @@ def index():
 #        return redirect('/core/users/all')
     return render_template('index.html')
 
+# --- ORDERS ---
+
 @core.route('/orders/all', methods=['GET'])
 def orders():
     ''' Список заказов '''
@@ -40,20 +43,13 @@ def create():
     ''' Добавить ордер '''
     form_order = OrderForm()
     info = request.form.to_dict()
-    print('-'*20)
-    print(info)
     if form_order.validate_on_submit():
         add = []
         for i in form_order:
             if i.data != None:
                 add.append((i.name,i.data))
         add_order = dict(add)
-        print('=add_order-'*10)
-        print(add_order)
-        print('=end==add_order-'*10)
         add = addOrder(**add_order)
-#        print('=add+'*20)
-#        print(add.id)
         if add == 'error':
             error = 'Ошибка договор с номером '+ add_order['ord_num']+' существует'
             return render_template('orders/create.html',form_order=form_order, error=error)
@@ -63,12 +59,11 @@ def create():
 
 @core.route('/orders/addtype/<order_id>', methods=['POST','GET'])
 def addtype(order_id):
-    ''' Добавлять наименование '''
+    ''' Добавить наименование '''
     view_order = viewOrder(order_id)
     discount_sum = view_order.discount_sum
     form_ordertype = OrderTypeForm()
     form_discount = DiscountForm()
-#    data = [i for i in view_order]
     if request.method == 'POST':
         if form_discount.data['csrf_token_discount'] == '':
             form_discount.data['errors'] = ''
@@ -100,7 +95,6 @@ def addtype(order_id):
     discount = discountOrder(orders_sum,view_order.discount, discount_sum) # Расчет скидки
 
     pays = calcPayOrder(sot,discount) # Расчет суммы оплат
-#    selectPays = selectPaysOrder(order_id)
     selectPays = calcPaysOrder(order_id)
     if selectPays:
         pays_sum_order = selectPays[1]
@@ -120,8 +114,6 @@ def editorder(order_id):
             for i in form_order:
                 upd.append((i.name, i.data))
         update = dict(upd)
-        print('-'*30)
-        print(update)
         upd_order = editDiscountOrder(order_id,**update)
         if upd_order == 'Done':
             return redirect('core/orders/addtype/'+str(order_id))
@@ -160,6 +152,7 @@ def deltype(quantity_id):
         return redirect('core/orders/addtype/'+ str(delete_quantity))
     return render_template('orders/deletetype.html', form_ordertype=form_ordertype, ordertype=ordertype)
 
+# --- PAYS ---
 
 @core.route('/pays/allpays', methods=['GET','POST'])
 def allpays():
@@ -195,6 +188,24 @@ def pay_order(order_id):
         add = addpay_order(order_id,**pay)
         return redirect('core/orders/addtype/'+str(order_id))
     return render_template('pays/addpay.html', form_pay=form_pay)
+
+@core.route('/pays/del/<id>', methods=['GET','POST'])
+def deletepay(id):
+    """ Удаление оплаты по ID """
+    form_pay = PayForm(request.form)
+    data = viewPay(id)
+    print('---data--del'*8)
+    print(data)
+    print(type(data))
+    if request.method == 'POST':
+        if data is not None:
+            delete = deletePay(id)
+            return redirect('core/orders/addtype/'+str(data.oid))
+        else:
+            return redirect('core/orders/all')
+    return render_template('pays/delete_pay.html', form_pay=form_pay, data=data)
+
+# --- EXPENSE ---
 
 @core.route('/expense/allexpenses', methods=['GET','POST'])
 def allexpenses():
@@ -250,7 +261,6 @@ def editcompanyexpense(id):
         else:
             return redirect('core/expense/company/all')
     return render_template('expenses/company/edit.html', form=form, data=data)
-
 
 @core.route('/expense/company/del/<id>', methods=['GET','POST'])
 def deletecompanyexpense(id):

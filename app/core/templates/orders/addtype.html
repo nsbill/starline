@@ -64,7 +64,7 @@
                       <td>{{ pay.pay_date.strftime('%Y-%m-%d %H:%M:%S') }}</td>
                       <td>{{ pay.pay }} руб.</td>
                       <td>{{ pay.pay_descr }}</td>
-                      <td>уд.</td>
+                      <td><a href="{{ get_ablolute_url  }}/core/pays/del/{{ pay.id }}">уд.</td>
                     </tr>
                   </tbody>
                 {% endfor %}
