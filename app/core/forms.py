@@ -9,8 +9,8 @@ class OrderForm(FlaskForm):
 #    complete_date = DateTimeField('complete_date', validators=[InputRequired()], format='%Y-%m-%d mm:ss')
     client = StringField('client', validators=[InputRequired()])
     phone = StringField('phone', validators=[InputRequired()])
-    discount = IntegerField('discount', render_kw={'placeholder': u'Скидка, до 100%'})
-    discount_sum = IntegerField('discount_sum',render_kw={'placeholder': u'Скидка, от 0 руб.'})
+    discount = IntegerField('discount', render_kw={'placeholder': u'Скидка, до 100%'},default=0)
+    discount_sum = IntegerField('discount_sum',default=0,render_kw={'placeholder': u'Скидка, от 0 руб.'})
 #    discount = IntegerField('discount',default=0,validators=[InputRequired(), NumberRange(min=0,max=100, message=' Ошибка: скидка от 0 до 100%')])
 #    discount_sum = IntegerField('discount_sum',default=0,validators=[InputRequired(), NumberRange(min=0, message=' Ошибка: скидка от 0 руб.')])
 #    orders_type_id = IntegerField('orders_type_id')
@@ -91,6 +91,11 @@ class EditOrderForm(FlaskForm):
             if int(field.data) < 0 or int(field.data) > 100:
                 raise ValidationError('Ошибка: скидка от 0 до 100%')
 
+class ExpenseCompanyForm(FlaskForm):
+    """Форма расходов компании""" 
+    name = StringField('name', validators=[InputRequired()])
+    quantity_sum = FloatField('quantity_sum', validators=[InputRequired(), NumberRange(min=0,max=999999999, message='Ошибка ввода: сумма от 0 руб')])
+    descr = TextAreaField('descr')
 
 #class ClientForm(FlaskForm):
 #    uid = IntegerField('uid')

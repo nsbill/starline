@@ -15,7 +15,7 @@ core = Blueprint('core',__name__, template_folder='templates')
 
 from orders import allOrders, infoOrder, addOrder, addOrderType, viewOrder, viewOrderType, selectOrderType, discountOrder, editQuantity, deleteQuantity, addpay_order, calcPayOrder, selectPaysOrder, calcPaysOrder, calcPayment, editDiscountOrder, allPays, allDatePays
 
-from expense.expense import allExpenseCompany, addExpenseCompany, viewExpenseCompanyId, editExpenseCompanyId, deleteExpenseCompanyId
+from expense.expense import allExpenseCompany
 
 @core.route('/', methods=['GET'])
 def index():
@@ -47,9 +47,6 @@ def create():
             if i.data != None:
                 add.append((i.name,i.data))
         add_order = dict(add)
-        print('=add_order-'*10)
-        print(add_order)
-        print('=end==add_order-'*10)
         add = addOrder(**add_order)
 #        print('=add+'*20)
 #        print(add.id)
@@ -214,52 +211,19 @@ def allcompanyexpense():
 def addcompanyexpense():
     """Создание позиции расходов для фирмы"""
     form = ExpenseCompanyForm(request.form)
+    info = request.form.to_dict()
+    print('-'*20)
+    print(info)
     if request.method == 'POST' and form.validate():
         add = []
         for i in form:
-            if i.data != None:
-                add.append((i.name,i.data))
-        add_data = dict(add)
-        del add_data['csrf_token']
-        add = addExpenseCompany(**add_data)
-        if add == 'error':
-            error = 'Ошибка'
-            return render_template('expense/company/add.html',form=form, error=error)
-        else:
-            return redirect('core/expense/company/all')
+            print('-i-'*20)
+            print(i)
+            if i.name != None:
+                add.append(i.name, float(i.quantity_sum), i.descr)
+        print('-ADD_Company-'*10)
+        print(add)
     return render_template('expenses/company/add.html', form=form)
-
-@core.route('/expense/company/edit/<id>', methods=['GET','POST'])
-def editcompanyexpense(id):
-    """ Редактирование позицию затрат офиса """
-    form = ExpenseCompanyForm()
-    data = viewExpenseCompanyId(id)
-    if request.method == 'POST' and form.validate():
-        add = []
-        for i in form:
-            if i.data != None:
-                add.append((i.name,i.data))
-        update = dict(add)
-        del update['csrf_token']
-        edit = editExpenseCompanyId(id,**update)
-        if add == 'error':
-            error = 'Ошибка'
-            return render_template('expense/company/edit.html',form=form, error=error)
-        else:
-            return redirect('core/expense/company/all')
-    return render_template('expenses/company/edit.html', form=form, data=data)
-
-
-@core.route('/expense/company/del/<id>', methods=['GET','POST'])
-def deletecompanyexpense(id):
-    """Удаление позиции затрат офиса"""
-    form = ExpenseCompanyForm()
-    data = viewExpenseCompanyId(id)
-    if request.method == 'POST':
-        delete = deleteExpenseCompanyId(id)
-        if delete == 'None':
-            return redirect('core/expense/company/all')
-    return render_template('expenses/company/delete.html', form=form, data=data)
 
 @core.route('/error', methods=['GET'])
 def error():

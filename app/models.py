@@ -96,8 +96,8 @@ class Incoming(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
     date = db.Column('date', db.DateTime())
     number = db.Column('number', db.Integer(), nullable=False)
-    code = db.Column('code',db.Integer())
-    name = db.Column('name', db.String(255), nullable=False)
+    vendor = db.Column('code',db.Integer())
+    name = db.Column('vendor', db.String(255), nullable=False)
     units = db.Column('utits', db.String(10))
     quantity = db.Column('quantity', db.Float())
     value = db.Column('value', db.Float())
@@ -111,7 +111,7 @@ class Expense(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
     date = db.Column('date', db.DateTime())
     number = db.Column('number', db.Integer(), nullable=False)
-    code = db.Column('code',db.Integer())
+    vendor = db.Column('vendor',db.Integer())
     name = db.Column('name', db.String(255), nullable=False)
     units = db.Column('utits', db.String(10))
     quantity = db.Column('quantity', db.Float())
@@ -134,9 +134,24 @@ class Supplier(db.Model):
     address = db.Column('address', db.String(120))
     descr = db.Column('descr', db.String(240))
 
+class Store(db.Model):
+    """Склад"""
+    id = db.Column(db.Integer(), primary_key=True)
+    date = db.Column('date',db.DateTime(), default=current_timestamp())
+    vendor = db.Column('vendor',db.Integer())
+    name = db.Column('name', db.String(255), nullable=False)
+    units = db.Column('utits', db.String(10))
+    quantity = db.Column('quantity', db.Float())
+    quantity_sum = db.Column('quantity_sum', db.Float(), nullable=False)
+    descr = db.Column('descr', db.String(240))
 
-
-
+class ExpenseCompany(db.Model):
+    """Расходы фирмы"""
+    id = db.Column(db.Integer(), primary_key=True)
+    date = db.Column('date',db.DateTime(), default=current_timestamp())
+    name = db.Column('name', db.String(255), nullable=False)
+    quantity_sum = db.Column('quantity_sum', db.Float(), nullable=False)
+    descr = db.Column('descr', db.String(240))
 
 #class Fees(db.Model):
 #    pass

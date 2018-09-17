@@ -165,15 +165,16 @@
 <hr>
 <div class="medium-12 cell">
   <div class="grid-x grid-padding-x">
-    <div class="medium-12 cell">
+    <div class="medium-6 cell">
+      Продажа
       <table class="stack">
         <thead>
           <tr>
-            <th width="500">Наименнование заказа</th>
-            <th width="30">Кол-во</th>
-            <th width="30">Цена</th>
-            <th width="30">Сумма</th>
-            <th width="100"></th>
+            <th width="50%">Наименнование заказа</th>
+            <th width="16%">Кол-во</th>
+            <th width="7%">Ценa, руб</th>
+            <th width="7%">Сумма, руб</th>
+            <th width="15%"></th>
           </tr>
         </thead>
         {% for order in sot[0] %}
@@ -181,8 +182,33 @@
           <tr>
             <td>{{ order[0].name }}</td>
             <td>{{ order[0].quantity}} | {{ order[0].units }}</td>
-            <td>{{ order[0].quantity_sum|round(2)}} руб.</td>
-            <td>{{ order[1]|round(2)}} руб.</td>
+            <td>{{ order[0].quantity_sum|round(2)}}</td>
+            <td>{{ order[1]|round(2)}}</td>
+            <td><a href="{{ get_ablolute_url  }}/core/orders/edittype/{{ order[0].id }}">ред. </a> / <a href="{{ get_ablolute_url  }}/core/orders/deltype/{{ order[0].id }}">уд.</a></td>
+          </tr>
+        </tbody>
+      {% endfor %}
+      </table>
+    </div>
+    <div class="medium-6 cell">
+      Затраты
+      <table class="stack">
+        <thead>
+          <tr>
+            <th width="50%">Наименнование</th>
+            <th width="16%">Кол-во</th>
+            <th width="7%">Ценa, руб</th>
+            <th width="7%">Сумма, руб</th>
+            <th width="15%"></th>
+          </tr>
+        </thead>
+        {% for order in sot[0] %}
+        <tbody>
+          <tr>
+            <td>{{ order[0].name }}</td>
+            <td>{{ order[0].quantity}} | {{ order[0].units }}</td>
+            <td>{{ order[0].quantity_sum|round(2)}}</td>
+            <td>{{ order[1]|round(2)}}</td>
             <td><a href="{{ get_ablolute_url  }}/core/orders/edittype/{{ order[0].id }}">ред. </a> / <a href="{{ get_ablolute_url  }}/core/orders/deltype/{{ order[0].id }}">уд.</a></td>
           </tr>
         </tbody>

@@ -12,13 +12,16 @@ class ModDatetime:
         date = date.replace(month=date.month+1, day=1) - timedelta(days=1)
         return date.strftime('%d-%m-%Y')
 
-    def reverse_date(self,d):
+    def reverse_date(self,date):
         '''Разварачивает дату с ДД-ММ-ГГГГ на ГГГГ-ММ-ДД'''
         try:
-            n = datetime.strptime(d, '%d-%m-%Y')
-            date = str(n.year)+'-'+str(n.month)+'-'+str(n.day)
+            data = datetime.strptime(date, '%d-%m-%Y')
+            date = str(data.year)+'-'+str(data.month)+'-'+str(data.day)
             return date
         except:
-#            date = '-'.join(d.split('-')[::-1])
             date = ''
             return date
+
+    def allmonthdays(self,year,month):
+        pass
+#            date = '-'.join(d.split('-')[::-1])
