@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  Склад
+{% endblock %}
+
+{% block content_titel %}
+  Склад
+{% endblock %} 
+
+{% block content %}
+{% from "_formhelpers.html" import render_field %}
+  <div class="grid-x grid-padding-x">
+    <div class="medium-12 cell">
+    <form method="POST">
+      {{ form.csrf_token  }}
+      <div class="grid-x grid-margin-x">
+
+    <div class="medium-10 medium-offset-1 cell">
+        <h3>Удалить данную позицию</h3>
+      <table class="stack">
+        <thead>
+          <tr>
+            <th width="5%">Артикул</th>
+            <th width="40%">Наименование</th>
+            <th width="7%">Кол-во</th>
+            <th width="7%">Ед.Изм.</th>
+            <th width="7%">Ценa, руб</th>
+            <th width="25%">Описание</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>{{ form.vendor(value=data.vendor,readonly="readonly") }}</td>
+            <td>{{ form.name(value=data.name,readonly="readonly") }}</td>
+            <td>{{ form.quantity(value=data.quantity,readonly="readonly") }}</td>
+            <td>{{ form.units(value=data.units,readonly="readonly") }}</td>
+            <td>{{ form.quantity_sum(value=data.quantity_sum,readonly="readonly") }}</td>
+            <td>{{ form.descr(value=data.descr,readonly="readonly") }}</td>
+          </tr>
+        </tbody>
+      </table>
+                <input type="submit" class="button" value="Удалить">
+                <a href="{{ get_ablolute_url  }}/core/store/all">Отмена</a>		
+            </div>
+          </div>
+      </div>
+    </div>
+  </div>
+</form>
+{% endblock %}
+

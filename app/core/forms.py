@@ -97,6 +97,21 @@ class ExpenseCompanyForm(FlaskForm):
     quantity_sum = FloatField('quantity_sum', validators=[InputRequired(), NumberRange(min=0,max=999999999, message='Ошибка ввода: сумма от 0 руб')])
     descr = TextAreaField('descr')
 
+class StoreForm(FlaskForm):
+    """ Склад """
+    vendor = IntegerField('discount',default=0,validators=[InputRequired(), NumberRange(min=1, message='Ошибка: только целые числа в артикуле')])
+    name = StringField('name', validators=[InputRequired()])
+    units = SelectField(u'units', choices=[('шт.', 'шт.'),('ед.','ед.'), ('м', 'м'), ('м2', 'м2.'),('мл.','мл.'),('услуга','услуга'),])
+    quantity = FloatField('quantity', validators=[InputRequired(), NumberRange(min=1,max=100000000, message='Ошибка ввода: кол-во от 1 ед./шт.')])
+    quantity_sum = FloatField('quantity_sum', validators=[InputRequired(), NumberRange(min=0,max=100000000, message='Ошибка ввода: сумма от 0 руб')])
+    descr = TextAreaField('descr')
+
+class GroupProductForm(FlaskForm):
+    """ Группы """
+    name = StringField('name', validators=[InputRequired()])
+    descr = TextAreaField('descr')
+
+
 #class ClientForm(FlaskForm):
 #    uid = IntegerField('uid')
 #    login = StringField('login', validators=[InputRequired('A login is required'), Length(min=3, max=12, message='от 3 до 12 символов')])

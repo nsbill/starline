@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Склад\Расходная накладная
+{% endblock %}
+
+{% block content_titel %}
+ Расходная накладная 
+{% endblock %} 
+
+{% block content %}
+{% from "_formhelpers.html" import render_field %}
+  <div class="grid-x grid-padding-x">
+    <div class="medium-12 cell">
+    <form method="POST">
+      {{ form.csrf_token  }}
+      <div class="grid-x grid-margin-x">
+    <div class="medium-10 medium-offset-1 cell">
+        <h3>Внести изменения по данной позиции</h3>
+      <table class="stack">
+        <thead>
+          <tr>
+            <th width="5%">Артикул</th>
+            <th width="40%">Наименование</th>
+            <th width="7%">Кол-во</th>
+            <th width="7%">Ед.Изм.</th>
+            <th width="7%">Ценa, руб</th>
+            <th width="25%">Описание</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+              {% if form.vendor.errors %}
+                {{ form.vendor.errors }}
+              {% endif %}
+              {% if form.quantity.errors %}
+                {{ form.quantity.errors }}
+              {% endif %}
+              {% if form.quantity_sum.errors %}
+                {{ form.quantity_sum.errors }}
+              {% endif %}
+            <td>{{ form.vendor(value=data.vendor) }}</td>
+            <td>{{ form.name(value=data.name) }}</td>
+            <td>{{ form.quantity(value=data.quantity) }}</td>
+            <td>{{ form.units(value=data.units) }}</td>
+            <td>{{ form.quantity_sum(value=data.quantity_sum) }}</td>
+            <td>{{ form.descr(value=data.descr) }}</td>
+          </tr>
+        </tbody>
+      </table>
+                <input type="submit" class="button" value="Обновить">
+                <a href="{{ get_ablolute_url  }}/core/store/all">Отмена</a>		
+            </div>
+          </div>
+      </div>
+    </div>
+  </div>
+</form>
+{% endblock %}
+

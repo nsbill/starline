@@ -7,17 +7,19 @@ from datetime import datetime, date, timedelta
 from time import strptime
 import sys
 from modules.mod_date import ModDatetime
-from .forms import OrderForm, OrderTypeForm, PayForm, DiscountForm, EditOrderForm, ExpenseCompanyForm
+from .forms import OrderForm, OrderTypeForm, PayForm, DiscountForm, EditOrderForm, ExpenseCompanyForm, StoreForm, GroupProductForm
 
 sys.path.insert(0, '/app/core')
 sys.path.insert(0,'/app/modules/orders')
 sys.path.insert(0,'/app/modules/pays')
 sys.path.insert(0,'/app/modules/expense')
+sys.path.insert(0,'/app/modules/store')
 core = Blueprint('core',__name__, template_folder='templates')
 
 from orders import allOrders, infoOrder, addOrder, addOrderType, viewOrder, viewOrderType, selectOrderType, discountOrder, editQuantity, deleteQuantity, editDiscountOrder
 from pays import addpay_order, calcPayOrder, selectPaysOrder, calcPaysOrder, calcPayment, allPays, allDatePays, viewPay, deletePay
 from expense import allExpenseCompany, addExpenseCompany, viewExpenseCompanyId, editExpenseCompanyId, deleteExpenseCompanyId
+from store import allStore, addStore, viewStoreId, editStoreId, deleteStoreId, allGroupProduct, viewGroupProduct, addGroupProduct
 
 @core.route('/', methods=['GET'])
 def index():
@@ -272,6 +274,116 @@ def deletecompanyexpense(id):
         if delete == 'None':
             return redirect('core/expense/company/all')
     return render_template('expenses/company/delete.html', form=form, data=data)
+
+
+# --- STORE ---
+
+@core.route('/store/all')
+def allstore():
+    """Список всех позиций на складе """
+    data = allStore()
+    allgrprod = allGroupProduct()
+    return render_template('store/all.html',data=data,allgrprod=allgrprod)
+
+@core.route('/store/add', methods=['GET','POST'])
+def addstore():
+    """Приход на склад """
+    form = StoreForm(request.form)
+    allgrprod = allGroupProduct()
+    if request.method == 'POST' and form.validate():
+        add = []
+        for i in form:
+            if i.data != None:
+                add.append((i.name,i.data))
+        add.append(('gid',request.form['gid']))
+        add_data = dict(add)
+        del add_data['csrf_token']
+        add = addStore(**add_data)
+        if add == 'error':
+            error = 'Ошибка'
+            return render_template('store/add.html',form=form, error=error)
+        else:
+            return redirect('core/store/all')
+    return render_template('store/add.html', form=form, data = allgrprod)
+
+@core.route('/store/edit/<id>', methods=['GET','POST'])
+def editstore(id):
+    """ Редактирование позицию на складе """
+    form = StoreForm()
+    data = viewStoreId(id)
+    grprod_id = viewGroupProduct(data.gid)
+    print('-'*43)
+    print(data.gid)
+    print(grprod_id.name)
+    allgrprod = allGroupProduct()
+    if request.method == 'POST' and form.validate():
+        add = []
+        for i in form:
+            if i.data != None:
+                add.append((i.name,i.data))
+        add.append(('gid',request.form['gid']))
+        update = dict(add)
+        del update['csrf_token']
+        edit = editStoreId(id,**update)
+        if add == 'error':
+            error = 'Ошибка'
+            return render_template('store/edit.html',form=form, error=error)
+        else:
+            return redirect('core/store/all')
+    return render_template('store/edit.html', form=form, data=data, allgrprod=allgrprod, grprod=grprod_id)
+
+@core.route('/store/addexpense/<id>', methods=['GET','POST'])
+def addexpensestore(id):
+    """ Создание расходной накладной """
+    form = StoreForm()
+    data = viewStoreId(id)
+    if request.method == 'POST' and form.validate():
+        add = []
+        for i in form:
+            if i.data != None:
+                add.append((i.name,i.data))
+        update = dict(add)
+        del update['csrf_token']
+        edit = editStoreId(id,**update)
+        if add == 'error':
+            error = 'Ошибка'
+            return render_template('store/expense.html',form=form, error=error)
+        else:
+            return redirect('core/store/all')
+    return render_template('store/expense.html', form=form, data=data)
+
+@core.route('/store/del/<id>', methods=['GET','POST'])
+def deletestore(id):
+    """Удаление позиции на складе """
+    form = StoreForm()
+    data = viewStoreId(id)
+    if request.method == 'POST':
+        delete = deleteStoreId(id)
+        if delete == 'None':
+            return redirect('core/store/all')
+        else:
+            return redirect('core/store/all')
+    return render_template('store/delete.html', form=form, data=data)
+# --- STORE GROUP ---
+
+@core.route('/store/groups/add', methods=['GET','POST'])
+def addgroupsstore():
+    """Добавить группу наименований на складе"""
+    form = GroupProductForm(request.form)
+    if request.method == 'POST' and form.validate():
+        add = []
+        for i in form:
+            if i.data != None:
+                add.append((i.name,i.data))
+        add_data = dict(add)
+        del add_data['csrf_token']
+        add = addGroupProduct(**add_data)
+        if add == 'error':
+            error = 'Ошибка'
+            return render_template('store/groups/add.html',form=form, error=error)
+        else:
+            return redirect('core/store/all')
+    return render_template('store/groups/add.html', form=form)
 
 @core.route('/error', methods=['GET'])
 def error():

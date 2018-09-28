@@ -125,6 +125,7 @@ class GroupProduct(db.Model):
     """Группы наименований"""
     id = db.Column(db.Integer(), primary_key=True)
     name = db.Column('name', db.String(50))
+    descr = db.Column('descr', db.String(240))
 
 class Supplier(db.Model):
     """Поставщики """
@@ -140,10 +141,11 @@ class Store(db.Model):
     date = db.Column('date',db.DateTime(), default=current_timestamp())
     vendor = db.Column('vendor',db.Integer())
     name = db.Column('name', db.String(255), nullable=False)
-    units = db.Column('utits', db.String(10))
+    units = db.Column('units', db.String(10))
     quantity = db.Column('quantity', db.Float())
     quantity_sum = db.Column('quantity_sum', db.Float(), nullable=False)
     descr = db.Column('descr', db.String(240))
+    gid = db.Column('gid',db.Integer(), db.ForeignKey('group_product.id'))
 
 class ExpenseCompany(db.Model):
     """Расходы фирмы"""
