@@ -23,6 +23,10 @@ def viewStoreId(id):
     query = Store.query.filter_by(id=id).first()
     return query
 
+def listStoreGID(gid):
+    query = Store.query.filter_by(gid=gid).all()
+    return query
+
 def editStoreId(id,**update):
     """ Редактировать позицию в таб. Store по ID"""
     if update != {}:
@@ -46,6 +50,7 @@ def allGroupProduct():
     """ Выборка всех наименований из GroupProduct """
     query = GroupProduct.query.all()
     return query
+
 
 def viewGroupProduct(id):
     query = GroupProduct.query.filter_by(id=id).first()

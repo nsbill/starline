@@ -19,7 +19,7 @@ core = Blueprint('core',__name__, template_folder='templates')
 from orders import allOrders, infoOrder, addOrder, addOrderType, viewOrder, viewOrderType, selectOrderType, discountOrder, editQuantity, deleteQuantity, editDiscountOrder
 from pays import addpay_order, calcPayOrder, selectPaysOrder, calcPaysOrder, calcPayment, allPays, allDatePays, viewPay, deletePay
 from expense import allExpenseCompany, addExpenseCompany, viewExpenseCompanyId, editExpenseCompanyId, deleteExpenseCompanyId
-from store import allStore, addStore, viewStoreId, editStoreId, deleteStoreId, allGroupProduct, viewGroupProduct, addGroupProduct
+from store import allStore, addStore, listStoreGID, viewStoreId, editStoreId, deleteStoreId, allGroupProduct, viewGroupProduct, addGroupProduct
 
 @core.route('/', methods=['GET'])
 def index():
@@ -278,12 +278,30 @@ def deletecompanyexpense(id):
 
 # --- STORE ---
 
-@core.route('/store/all')
+@core.route('/store/all', methods=['GET','POST'])
 def allstore():
     """Список всех позиций на складе """
     data = allStore()
     allgrprod = allGroupProduct()
+    if request.method == 'POST':
+        id=request.form['gid']
+        return redirect('core/store/list/'+id)
     return render_template('store/all.html',data=data,allgrprod=allgrprod)
+
+@core.route('/store/list/<gid>', methods=['GET','POST'])
+def liststore(gid):
+    """ Просмотр группы на складе """
+    data = viewStoreId(gid)
+    grprod_id = viewGroupProduct(gid)
+    gid_list = listStoreGID(gid)
+    allgrprod = allGroupProduct()
+    if request.method == 'POST':
+        gid=request.form['gid']
+        if gid:
+            return redirect('core/store/list/'+gid)
+        else:
+            return redirect('core/store/all')
+    return render_template('store/list.html',data=data,allgrprod=allgrprod, grprod=grprod_id, gidlist=gid_list)
 
 @core.route('/store/add', methods=['GET','POST'])
 def addstore():
@@ -312,9 +330,6 @@ def editstore(id):
     form = StoreForm()
     data = viewStoreId(id)
     grprod_id = viewGroupProduct(data.gid)
-    print('-'*43)
-    print(data.gid)
-    print(grprod_id.name)
     allgrprod = allGroupProduct()
     if request.method == 'POST' and form.validate():
         add = []
