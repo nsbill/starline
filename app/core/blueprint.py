@@ -364,7 +364,16 @@ def addexpensestore(order_id):
         print('----cancel_material----'*8)
         cancel_material = request.form.to_dict()
         print(cancel_material)
-        data['materials'] = [ int(i) for i in form_materials]
+        cancel=[]
+        for key,val in cancel_material.items():
+            print(key,val)
+            if key[0:3] == '000':
+                cancel.append(int(key))
+        print('-----'*8)
+        print(cancel)
+        materials = [ int(i) for i in form_materials ]
+        materials = set(materials) - set(cancel)
+        data['materials'] = materials 
 
         return render_template('store/expense.html', form=form, data=data, date_today=date_today)
     return render_template('store/expense.html', form=form, data=data, date_today=date_today)

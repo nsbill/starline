@@ -54,14 +54,14 @@
                               <td>{{ item.quantity_sum|round(2)}}</td>
                               <td><input type="number" value="0" name="{{ i }}"></td>
                               <td>
-                                <input name="{{ i }}" type="submit" class="button" value="del">
+                                <input name="000{{ i }}" type="submit" class="button" value="del">
                             </tr>
                           </tbody>
                           {% endif %}
                         {% endfor %}
                       {% endfor %}
                     </table>
-                    <input name="add" type="submit" class="button" value="Добавить">
+                    <input name="122222" type="submit" class="button" value="Добавить">
                     <p>{{ data.materials }}</p>
                     {% for i in data.allgrprod %}
                     <div class="tabs-panel" id="p{{ i.id }}">
