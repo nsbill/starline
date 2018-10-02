@@ -351,6 +351,9 @@ def addexpensestore(order_id):
     form = StoreForm()
     allgrprod = allGroupProduct()
     allstore = allStore()
+    print('-request---'*4)
+    print(request.method)
+    print(request.form)
 #    grprod_id = viewGroupProduct(gid)
     data = {}
     data['order_id']=order_id
@@ -358,14 +361,29 @@ def addexpensestore(order_id):
     data['allstore']=allstore
 #    data['grprod_id']=grprod_id
     if request.method == 'POST':
-        print('-'*30)
-        print(request.form)
+        m = []
         form_materials = list(request.form)
-        print('----cancel_material----'*8)
-        cancel_material = request.form.to_dict()
-        print(cancel_material)
-        data['materials'] = [ int(i) for i in form_materials]
-
+        print(list(form_materials))
+#        for i in form_materials:
+        print(type(form_materials))
+        m.append(form_materials[0])
+        data['materials']=m
+#         store_id = request.form['store_id']
+#        data = viewStoreId(store_id)
+#        add = []
+#        for i in form:
+#            if i.data != None:
+#                add.append((i.name,i.data))
+#        update = dict(add)
+#        del update['csrf_token']
+#        edit = editStoreId(id,**update)
+#        if add == 'error':
+#            error = 'Ошибка'
+#            return render_template('store/expense.html',form=form, error=error)
+#        else:
+#            return redirect('core/store/all')
+        print('*'*50)
+        print(data)
         return render_template('store/expense.html', form=form, data=data, date_today=date_today)
     return render_template('store/expense.html', form=form, data=data, date_today=date_today)
 

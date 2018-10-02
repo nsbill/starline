@@ -35,10 +35,6 @@ class ModStore:
             self.kwargs[i] = kwargs[i]
         return self.kwargs
 
-    def grproduct(self, **kwargs):
-	"""Группы"""
-       self.add = self.add()
-
 #    def addtype(self, **kwargs):
 #        '''Add an order type '''
 #        return self.kwargs

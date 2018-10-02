@@ -9,29 +9,24 @@
 {% endblock %} 
 
 {% block content %}
-<h3>Склад</h3>
-<div class="medium-12 cell">
-  <div class="grid-x grid-padding-x">
-    <div class="medium-10 cell">
+<div class="grid-x grid-padding-x">
+  <div class="medium-12 cell">
+    <div class="grid-x grid-padding-x">
+      <div class="medium-10 medium-offset-1 cell">
+      <h3>Склад</h3>
       <p><a href="{{ get_ablolute_url  }}/core/store/add"> Добавить </a></p>
-    <form method="POST">
-        <label>Группы 
-      <input type="submit" class="button" value="Показать">
-        <select name="gid">
-        {% for i in allgrprod %}
-        <option value="{{ i.id }}">
-            {{ i.id }} | {{ i.name }} | {{ i.descr }}
-        </option>
-        {% endfor %}
-      </select>
-      </label>
-    </form>
-    </div>
-  </div>
-</div>
-<div class="medium-12 cell">
-  <div class="grid-x grid-padding-x">
-    <div class="medium-10 cell">
+      <form method="POST">
+          <label>Группы 
+          <input type="submit" class="button" value="Показать">
+          <select name="gid">
+          {% for i in allgrprod %}
+          <option value="{{ i.id }}">
+              {{ i.id }} | {{ i.name }} | {{ i.descr }}
+          </option>
+          {% endfor %}
+        </select>
+        </label>
+      </form>
       <table class="stack">
         <thead>
           <tr>
@@ -64,6 +59,9 @@
         </tbody>
       {% endfor %}
       </table>
+      </div>
     </div>
+  </div>
+</div>
 {% endblock %}
 
