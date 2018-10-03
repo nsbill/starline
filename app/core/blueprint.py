@@ -360,20 +360,31 @@ def addexpensestore(order_id):
     if request.method == 'POST':
         print('-'*30)
         print(request.form)
-        form_materials = list(request.form)
+#        form_materials = list(request.form)
         print('----cancel_material----'*8)
-        cancel_material = request.form.to_dict()
-        print(cancel_material)
+        materials = request.form.to_dict()
+        print(materials)
+#        materials = []
         cancel=[]
-        for key,val in cancel_material.items():
+        for key,val in materials.items():
             print(key,val)
             if key[0:3] == '000':
-                cancel.append(int(key))
-        print('-----'*8)
-        print(cancel)
-        materials = [ int(i) for i in form_materials ]
-        materials = set(materials) - set(cancel)
-        data['materials'] = materials 
+                print('-del==='*20)
+                cancel.append(key)
+                cancel.append(str(int(key)))
+#            else:
+#                materials.append((int(key),float(val)))
+#        print('-----'*8)
+#        print(cancel)
+        for i in cancel:
+            del materials[i]
+        print('='*30)
+        print(materials)
+#        materials = [ int(i[0]) for i in materials ]
+#        materials = set(materials) - set(cancel)
+        materials = [ (int(key),val) for key,val in materials.items() ]
+        print(materials)
+        data['materials'] = set(materials)
 
         return render_template('store/expense.html', form=form, data=data, date_today=date_today)
     return render_template('store/expense.html', form=form, data=data, date_today=date_today)
