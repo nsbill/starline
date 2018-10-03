@@ -15,9 +15,10 @@
     <form method="POST">
       <div class="grid-x grid-margin-x">
     <div class="medium-10 medium-offset-1 cell">
-        <h3>Группы</h3>
+        <h3>Группa "{{ grprod.name }}" </h3>
+      <p><a href="{{ get_ablolute_url  }}/core/store/add"> Добавить наименование</a></p>
         <label>
-      <input type="submit" class="button" value="Показать">
+      <input type="submit" class="button" value="Выборка ">
         <select name="gid">
           <option value="{{ data.gid }}">{{ grprod.id }} | {{ grprod.name }} | {{ grprod.descr }}</option>
         {% for i in allgrprod %}

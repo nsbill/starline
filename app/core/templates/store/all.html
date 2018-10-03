@@ -14,10 +14,10 @@
     <div class="grid-x grid-padding-x">
       <div class="medium-10 medium-offset-1 cell">
       <h3>Склад</h3>
-      <p><a href="{{ get_ablolute_url  }}/core/store/add"> Добавить </a></p>
+      <p></p>
+      <label>Валюта: <b>Российский рубль</b> / <a href="{{ get_ablolute_url  }}/core/store/add"><b> Добавить наименование </b></a> / <a href="/core/store/groups/add" ><b>Добавить группу</b></a></label>
       <form method="POST">
-          <label>Группы 
-          <input type="submit" class="button" value="Показать">
+          <input type="submit" class="button" value="Сортировка по группе">
           <select name="gid">
           {% for i in allgrprod %}
           <option value="{{ i.id }}">

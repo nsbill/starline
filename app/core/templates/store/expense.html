@@ -95,7 +95,7 @@
                                 <td>{{ item.quantity_sum|round(2)}}</td>
                                 <td>{{ item.descr }}</td>
                                 <td>
-                                  <input id="checkbox{{ item.id }}" name="{{item.id}}" value={{ item.quantity|round(2) }} type="checkbox"><label for="checkbox{{ item.id }}"></label>
+                                  <input id="checkbox{{ item.id }}" name="{{item.id}}" value="0" type="checkbox"><label for="checkbox{{ item.id }}"></label>
                               </tr>
                             </tbody>
                           {% endif %}
