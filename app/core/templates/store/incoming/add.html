@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
 
 {% block title %}
-Склад\Расходная накладная
+Склад\Приходая накладная
 {% endblock %}
 
 {% block content_titel %}
- Расходная накладная 
+ Приходная накладная 
 {% endblock %} 
 
 {% block content %}
@@ -20,56 +20,66 @@
                 <ul class="vertical tabs" data-tabs id="example-tabs">
                   <li class="tabs-title is-active"><a href="#1" aria-selected="true">Склад</a></li>
                   {% for i in data.allgrprod %}
-                      <li class="tabs-title"><a href="#p{{ i.id }}">{{ i.name }}</a></li>
+                     <li class="tabs-title"><a href="{{ get_absolute_url }}/core/store/incoming/add?g={{ i.id }}">{{ i.name }}</a></li>
                   {% endfor %}
                 </ul>
               </div>
               <div class="cell medium-9">
                 <div class="tabs-content" data-tabs-content="example-tabs">
-                  <h5>Расходная накладная №1  от {{ date_today }} | Заказ: №{{ data.order_id }}</h5>
-                  <form method="POST" name="store">
+                  <h5>Приходная накладная №1  от {{ date_today }} | Ордер: №{{ data.order_id }}</h5>
+                  <div class="grid-x grid-padding-x">
+                    <div class="medium-12 cell">
+                      <label>Поиск</label>
+                      <input>
+                      <input name="000" type="submit" class="button" value="OK">
+                      <a href="/"><b>Новый товар</b></a>
+                    </div>
+                  </div>
+                  <form method="POST" id="zxc" name="store">
+                    {{ data }}
+                      {{ data.NewAddItemID }}
+                    <input type="text" size="40" name="{{ data.incomings }}">
+                          {% if data.ListGroupID %}
                     <table class="stack" style="font-size: 80%;">
                       <thead>
                         <tr>
-                          <th>id</th>
-                          <th width="5%">Артикул</th>
-                          <th>Наименование</th>
-                          <th>В наличии</th>
-                          <th>Ед.</th>
-                          <th>Ценa,1ед</th>
-                          <th width="10%">Кол-во</th>
+                          <th width="2%">id</th>
+                          <th width="2%">Артикул</th>
+                          <th>Номенклатура</th>
+                          <th width="11%">Кол-во</th>
+                          <th width="10%">Ед.</th>
+                          <th width="12%">Ценa,1ед</th>
                           <th></th>
                         </tr>
                       </thead>
-                      {% for i in data.materials %}
-                        {% for item in data.allstore %}
-                          {% if item.id == i[0] %}
+                        {% for item in data.NewAddItemID %}
+                        {{ item }}
                           <tbody>
                             <tr>
                               <td>{{ item.id}}</td>
                               <td>{{ item.vendor }}</td>
                               <td>{{ item.name }}</td>
-                              <td>{{ item.quantity|round(2)}}</td>
-                              <td>{{ item.units }}</td>
-                              <td>{{ item.quantity_sum|round(2)}}</td>
-                              <td><input type="number" value="{{ i[1] }}" max="{{ item.quantity }}" min="0" step="0.01" name="{{ i[0] }}"></td>
+                              <td>{{ form.quantity(value=item.quantity|round(2))}}</td>
+                              <td>{{ form.units(value=item.units) }}</td>
+                              <td>{{ form.quantity_sum(value=item.quantity_sum|round(2))}}</td>
                               <td>
-                                <input name="000{{ i[0] }}" type="submit" class="button" value="del">
+                                <input name="000{{ item.id }}" type="submit" class="button" value="del">
                             </tr>
                           </tbody>
-                          {% endif %}
-                        {% endfor %}
                       {% endfor %}
                     </table>
+                      {% endif %}
                     {% if data.materials %}
                     <input name="001" type="submit" class="button" value="Провести">
-                    <a href="{{ get_ablolute_url  }}/core/orders/addtype/{{ data.order_id }}">Отмена </a></td>
+                    <a href="{{ get_absolute_url }}/core/orders/addtype/{{ data.order_id }}">Отмена </a></td>
+
+                      {{ data }}
+                      {{ data.NewAddItemID }}
                     <p>{{ data.materials }}</p>
+
                     {% else %}
                     <p>Выберите расходные материалы</>
                     {% endif %}
-                    {% for i in data.allgrprod %}
-                    <div class="tabs-panel" id="p{{ i.id }}">
                       <table class="stack" style="font-size: 80%;">
                         <thead>
                           <tr>
@@ -83,8 +93,7 @@
                             <th>Выбрать</th>
                           </tr>
                         </thead>
-                        {% for item in data.allstore %}
-                          {% if item.gid == i.id %}
+                        {% for item in data.listGroupID %}
                             <tbody>
                               <tr>
                                 <td>{{ item.id}}</td>
@@ -94,16 +103,12 @@
                                 <td>{{ item.units }}</td>
                                 <td>{{ item.quantity_sum|round(2)}}</td>
                                 <td>{{ item.descr }}</td>
-                                <td>
-                                  <input id="checkbox{{ item.id }}" name="{{item.id}}" value="0" type="checkbox"><label for="checkbox{{ item.id }}"></label>
+                                <td><input id="checkbox{{ item.id }}" name="Incoming{{ item.id }}" value="0" type="checkbox"><label for="checkbox{{ item.id }}"></label></td>
                               </tr>
                             </tbody>
-                          {% endif %}
                         {% endfor %}
                       </table>
-                    <input type="submit" class="button" value="Добавить">
-                    </div>
-                    {% endfor %}
+                                <td><input type="submit" class="button" value="Добавить"></td>
                   </form>
                 </div>
               </div>

@@ -97,7 +97,7 @@ class ExpenseCompanyForm(FlaskForm):
     quantity_sum = FloatField('quantity_sum', validators=[InputRequired(), NumberRange(min=0,max=999999999, message='Ошибка ввода: сумма от 0 руб')])
     descr = TextAreaField('descr')
 
-class StoreForm(FlaskForm):
+class StoreIncomingForm(FlaskForm):
     """ Склад """
     vendor = IntegerField('discount',default=0,validators=[InputRequired(), NumberRange(min=1, message='Ошибка: только целые числа в артикуле')])
     name = StringField('name', validators=[InputRequired()])

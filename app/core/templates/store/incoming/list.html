@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  Список прихода на склад 
+{% endblock %}
+
+{% block content_titel %}
+ Список прихода на склад 
+{% endblock %} 
+
+{% block content %}
+<div class="grid-x grid-padding-x">
+  <div class="medium-12 cell">
+    <div class="grid-x grid-padding-x">
+      <div class="medium-10 medium-offset-1 cell">
+      <h3>Список прихода на склад</h3>
+        <div class="medium-6 cell callout secondary">
+            <div class="grid-content">
+              <form method="POST">
+                  <div class="grid-x grid-margin-x">
+                      <div class="medium-2 cell">
+                        <input type="text" name="date_with" value="{{ day.dmyw }}" onfocus="this.select();lcs(this)"
+                              onclick="event.cancelBubble=true;this.select();lcs(this)">
+                      </div>
+                  <div class="medium-2 cell"> 
+                    <input type="text" name="date_from" value="{{ day.dmyf }}" onfocus="this.select();lcs(this)"
+                          onclick="event.cancelBubble=true;this.select();lcs(this)">
+                  </div>
+                        <input type="submit" class="button" value="Submit">
+               </form>
+           </div>
+        </div>
+<!--        <table>
+          <thead>
+            <tr>
+              <th>Дата</th>
+              <th>Количество</th>
+              <th>Сумма</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>2000-01-01</td>
+              <td>3</td>
+              <td>1000000.32 руб.</td>
+            </tr>
+            <tr>
+              <td>2000-01-02</td>
+              <td>23</td>
+              <td>30000.40 руб.</td>
+            </tr>
+            <tr>
+              <td>2000-01-03</td>
+              <td>35</td>
+              <td>4000000.50 руб.</td>
+            </tr>
+          </tbody>
+        </table>
+-->
+      <p></p>
+      <label>Валюта: <b>Российский рубль</b> / <a href="{{ get_ablolute_url  }}/core/store/incoming/add"><b> Добавить наименование </b></a> / <a href="/core/store/groups/add" ><b>Добавить группу</b></a></label>
+      <form method="POST">
+          <input type="submit" class="button" value="Сортировка по группе">
+          <select name="gid">
+          {% for i in allgrprod %}
+          <option value="{{ i.id }}">
+              {{ i.id }} | {{ i.name }} | {{ i.descr }}
+          </option>
+          {% endfor %}
+        </select>
+        </label>
+      </form>
+      <table class="stack">
+        <thead>
+          <tr>
+            <th width="2%">ID</th>
+            <th width="2%">GID</th>
+            <th width="5%">Артикул</th>
+            <th width="15%">Дата</th>
+            <th width="40%">Наименование</th>
+            <th width="7%">Кол-во</th>
+            <th width="5%">Ед.</th>
+            <th width="7%">Ценa 1ед</th>
+            <th width="7%">Сумма</th>
+            <th width="25%">Описание</th>
+            <th width="7%"></th>
+          </tr>
+        </thead>
+        {% for item in data %}
+        <tbody>
+          <tr>
+            <td>{{ item.id }}</td>
+            <td>{{ item.gid }}</td>
+            <td>{{ item.vendor }}</td>
+            <td>{{ item.date.strftime('%Y-%m-%d %H:%M:%S')}}</td>
+            <td>{{ item.name }}</td>
+            <td>{{ item.quantity|round(2)}}</td>
+            <td>{{ item.units }}</td>
+            <td>{{ item.quantity_sum|round(2)}}</td>
+            <td>{{ item.total_sum }} </td>
+            <td>{{ item.descr }}</td>
+            <td><a href="{{ get_ablolute_url  }}/core/store/incoming/edit/{{ item.id }}">ред. </a> / <a href="{{ get_ablolute_url  }}/core/store/incoming/del/{{ item.id }}">уд.</a></td>
+          </tr>
+        </tbody>
+      {% endfor %}
+      </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+

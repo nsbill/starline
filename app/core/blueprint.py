@@ -7,7 +7,7 @@ from datetime import datetime, date, timedelta
 from time import strptime
 import sys
 from modules.mod_date import ModDatetime
-from .forms import OrderForm, OrderTypeForm, PayForm, DiscountForm, EditOrderForm, ExpenseCompanyForm, StoreForm, GroupProductForm
+from .forms import OrderForm, OrderTypeForm, PayForm, DiscountForm, EditOrderForm, ExpenseCompanyForm, StoreIncomingForm, GroupProductForm
 
 sys.path.insert(0, '/app/core')
 sys.path.insert(0,'/app/modules/orders')
@@ -16,10 +16,12 @@ sys.path.insert(0,'/app/modules/expense')
 sys.path.insert(0,'/app/modules/store')
 core = Blueprint('core',__name__, template_folder='templates')
 
+from mod_store import ModStore
+from mod_groupstore import ModGroupStore
 from orders import allOrders, infoOrder, addOrder, addOrderType, viewOrder, viewOrderType, selectOrderType, discountOrder, editQuantity, deleteQuantity, editDiscountOrder
 from pays import addpay_order, calcPayOrder, selectPaysOrder, calcPaysOrder, calcPayment, allPays, allDatePays, viewPay, deletePay
-from expense import allExpenseCompany, addExpenseCompany, viewExpenseCompanyId, editExpenseCompanyId, deleteExpenseCompanyId
-from store import allStore, addStore, listStoreGID, viewStoreId, editStoreId, deleteStoreId, allGroupProduct, viewGroupProduct, addGroupProduct
+from expense import allExpense, addExpense, allExpenseCompany, addExpenseCompany, viewExpenseCompanyId, editExpenseCompanyId, deleteExpenseCompanyId
+from store import allStore, allStoreIncoming, addStoreIncoming, listStoreIncomingGID, viewStoreIncomingId, editStoreIncomingId, deleteStoreIncomingId, checkVendorStore
 
 @core.route('/', methods=['GET'])
 def index():
@@ -209,11 +211,18 @@ def deletepay(id):
 @core.route('/expense/allexpenses', methods=['GET','POST'])
 def allexpenses():
     """Расходы"""
-    return render_template('expenses/allexpense.html')
+    allexpense = allExpense()
+    return render_template('expenses/allexpense.html', data = allexpense)
 
-@core.route('/expense/addexpense', methods=['GET','POST'])
+@core.route('/expense/addexpense', methods=['POST'])
 def addexpense():
-    """Создание позиции расходов"""
+    """Добавить позицию расходов"""
+    if  request.method == 'POST':
+        form = request.form.to_dict()
+        print('---form-expense---'*9)
+        print(form)
+        add = addExpense(order_id,**form)
+        return render_template('expenses/allexpense.html')
     return render_template('expenses/addexpense.html')
 
 @core.route('/expense/company/all')
@@ -279,7 +288,9 @@ def deletecompanyexpense(id):
 def allstore():
     """Список всех позиций на складе """
     data = allStore()
-    allgrprod = allGroupProduct()
+#    allgrprod = allGroupProduct()
+    mod = ModGroupStore()
+    allgrprod = mod.all()
     if request.method == 'POST':
         id=request.form['gid']
         return redirect('core/store/list/'+id)
@@ -288,10 +299,12 @@ def allstore():
 @core.route('/store/list/<gid>', methods=['GET','POST'])
 def liststore(gid):
     """ Просмотр группы на складе """
-    data = viewStoreId(gid)
-    grprod_id = viewGroupProduct(gid)
-    gid_list = listStoreGID(gid)
-    allgrprod = allGroupProduct()
+    mod = ModGroupStore()
+    allgrprod = mod.all()
+    grprod_id = mod.show(gid)
+    data = viewStoreIncomingId(gid)
+    gid_list = listStoreIncomingGID(gid)
+#    allgrprod = allGroupProduct()
     if request.method == 'POST':
         gid=request.form['gid']
         if gid:
@@ -300,34 +313,144 @@ def liststore(gid):
             return redirect('core/store/all')
     return render_template('store/list.html',data=data,allgrprod=allgrprod, grprod=grprod_id, gidlist=gid_list)
 
-@core.route('/store/add', methods=['GET','POST'])
+@core.route('/store/incoming/list', methods=['GET','POST'])
+def incoming_list():
+    """Просмотр всех наименований на склад"""
+    data = allStoreIncoming()
+#    allgrprod = allGroupProduct()
+    mod = ModGroupStore()
+    allgrprod = mod.all()
+    day = {}
+    day['dmyw'] = date.today().strftime('01-%m-%Y')
+    day['dmyf'] = date.today().strftime('%d-%m-%Y')
+
+    if request.method == 'POST':
+        id=request.form['gid']
+        return redirect('core/store/list/'+id)
+    return render_template('store/incoming/list.html',data=data,allgrprod=allgrprod,day=day)
+
+@core.route('/store/incoming/add', methods=['GET','POST'])
 def addstore():
     """Приход на склад """
-    form = StoreForm(request.form)
-    allgrprod = allGroupProduct()
-    if request.method == 'POST' and form.validate():
-        add = []
-        for i in form:
-            if i.data != None:
-                add.append((i.name,i.data))
-        add.append(('gid',request.form['gid']))
-        add_data = dict(add)
-        del add_data['csrf_token']
-        add = addStore(**add_data)
-        if add == 'error':
-            error = 'Ошибка'
-            return render_template('store/add.html',form=form, error=error)
-        else:
-            return redirect('core/store/all')
-    return render_template('store/add.html', form=form, data = allgrprod)
+    date_today = date.today().strftime('%Y-%m-%d')
+    form = StoreIncomingForm(request.form)
+#    allgrprod = allGroupProduct()
+    mod = ModGroupStore()
+    allgrprod = mod.all()
+#    allstore1 = allStoreIncoming()
+#    print(allstore1)
+    data={}
+    data['allgrprod']=allgrprod
+#    data['allstore']=allstore
+    print('-=get'*30)
+    print(request.args.get('g'))
+    print('='*80)
+    gid = request.args.get('g')
+    print(listStoreIncomingGID(gid))
+    listGroupID = listStoreIncomingGID(gid)
+    print('-FORM-'*10)
+    print(request.form)
+    addIncomItemId = list(request.form.to_dict())
+#    incomings.append(addIncomItemId)
+    print(addIncomItemId)
+    data['listGroupID'] = listGroupID
+    data['incomings'] = addIncomItemId
+    if request.method == 'POST':
+        print('-1'*30)
+        print(request.form)
+        print(request)
+        materials = request.form.to_dict()
+        print('materials---'*3)
+        print(materials)
+        print('Get-'*10)
+        print('-dict-ListAddItemsId-'*3)
+        print(data.values())
+        ListAddItemsId=ModStore.additems(**materials)
+        print('ListAddItemsId---'*3)
+        print(ListAddItemsId)
+        data['ListAddItemsId'] = ListAddItemsId
+#        cancel=[]
+#        send_expense = []
+#        for key,val in materials.items():
+#            if key[0:3] == '000':
+#                cancel.append(key)
+#                cancel.append(str(int(key)))
+#            else:
+#                if key[0:3] == '001':
+#                    send_expense.append(key)
+#        for i in cancel:
+##            print('---i==='*8)
+##            print(i)
+#            if i:
+#                del materials[i]
+#        materials = [ (key,val) for key,val in materials.items() ]
+#        data['materials'] = set(materials)
+#        if send_expense:
+#            if send_expense[0] == '001':
+##                print('send_expense---'*3)
+##                print(data['materials'])
+##                print(send_expense)
+#                data=data['materials']
+##                add = addExpense()
+#                return redirect('core/orders/addtype/'+str(order_id))
+        return render_template('store/incoming/add.html', form=form, data=data, date_today=date_today)
+    return render_template('store/incoming/add.html', form=form, data = data, date_today=date_today)
+#    if request.method == 'POST' and form.validate():
+#        add = []
+#        for i in form:
+#            print('-addStoreIncoming-'*10)
+#            print(i)
+#            if i.data != None:
+#                add.append((i.name,i.data))
+#        add.append(('gid',request.form['gid']))
+#        add_data = dict(add)
+#        add_data['total_sum'] = float(add_data['quantity']) * float(add_data['quantity_sum'])
+#        del add_data['csrf_token']
+#        add = addStoreIncoming(**add_data)
+#        print('==ADD=addStoreIncoming=='*3)
+#        print(add)
+#        add_store = checkVendorStore(**add)
+#        print('-add-store----'*8)
+#        print(add_store)
+#        if add == 'error':
+#            error = 'Ошибка'
+#            return render_template('store/imcoming/add.html',form=form, data=data, error=error)
+#        else:
+#            return redirect('core/store/all')
 
-@core.route('/store/edit/<id>', methods=['GET','POST'])
+@core.route('/store/incoming/add/<gid>', methods=['GET','POST'])
+def addlistitems(gid):
+    """Выборка с группы наименования """
+    date_today = date.today().strftime('%Y-%m-%d')
+    form = StoreIncomingForm(request.form)
+    data = listStoreIncomingGID(gid)
+    if request.method == 'POST':
+        print('-1'*30)
+        print(request.form)
+        print(request)
+        materials = request.form.to_dict()
+        print('materials---'*3)
+        print(materials)
+        print('Get-'*10)
+        print('-dict-ListAddItemsId-'*3)
+        print(data.values())
+        ListAddItemsId=ModStore.additems(**materials)
+        print('ListAddItemsId---'*3)
+        print(ListAddItemsId)
+        data['ListAddItemsId'] = ListAddItemsId
+        return render_template('store/incoming/add.html', form=form, data=data, date_today=date_today)
+    return render_template('store/incoming/add.html', form=form, data=data, date_today=date_today)
+
+@core.route('/store/incoming/edit/<id>', methods=['GET','POST'])
 def editstore(id):
     """ Редактирование позицию на складе """
-    form = StoreForm()
-    data = viewStoreId(id)
-    grprod_id = viewGroupProduct(data.gid)
-    allgrprod = allGroupProduct()
+    mod = ModGroupStore()
+    form = StoreIncomingForm()
+    data = viewStoreIncomingId(id)
+#    grprod_id = viewGroupProduct(data.gid)
+    grprod_id = mod.show(data.gid)
+#    allgrprod = allGroupProduct()
+    allgrprod = mod.all()
     if request.method == 'POST' and form.validate():
         add = []
         for i in form:
@@ -335,72 +458,73 @@ def editstore(id):
                 add.append((i.name,i.data))
         add.append(('gid',request.form['gid']))
         update = dict(add)
+        print('==UPDATE=StoreIncoming=='*3)
+        print(update)
+        update['total_sum'] = float(update['quantity']) * float(update['quantity_sum'])
         del update['csrf_token']
-        edit = editStoreId(id,**update)
+        edit = editStoreIncomingId(id,**update)
         if add == 'error':
             error = 'Ошибка'
-            return render_template('store/edit.html',form=form, error=error)
+            return render_template('store/incoming/edit.html',form=form, error=error)
         else:
             return redirect('core/store/all')
-    return render_template('store/edit.html', form=form, data=data, allgrprod=allgrprod, grprod=grprod_id)
+    return render_template('store/incoming/edit.html', form=form, data=data, allgrprod=allgrprod, grprod=grprod_id)
 
 @core.route('/store/addexpense/<order_id>', methods=['GET','POST'])
 def addexpensestore(order_id):
     """ Создание расходной накладной """
     date_today = date.today().strftime('%Y-%m-%d')
-    form = StoreForm()
-    allgrprod = allGroupProduct()
-    allstore = allStore()
-#    grprod_id = viewGroupProduct(gid)
+    form = StoreIncomingForm()
+#    allgrprod = allGroupProduct()
+    mod = ModGroupStore()
+    allgrprod = mod.all()
+    allstore = allStoreIncoming()
     data = {}
     data['order_id']=order_id
     data['allgrprod']=allgrprod
     data['allstore']=allstore
-#    data['grprod_id']=grprod_id
     if request.method == 'POST':
-        print('-'*30)
-        print(request.form)
-#        form_materials = list(request.form)
-        print('----cancel_material----'*8)
         materials = request.form.to_dict()
-        print(materials)
-#        materials = []
         cancel=[]
+        send_expense = []
         for key,val in materials.items():
-            print(key,val)
             if key[0:3] == '000':
-                print('-del==='*20)
                 cancel.append(key)
                 cancel.append(str(int(key)))
-#            else:
-#                materials.append((int(key),float(val)))
-#        print('-----'*8)
-#        print(cancel)
+            else:
+                if key[0:3] == '001':
+                    send_expense.append(key)
         for i in cancel:
-            del materials[i]
-        print('='*30)
-        print(materials)
-#        materials = [ int(i[0]) for i in materials ]
-#        materials = set(materials) - set(cancel)
+            print('---i==='*8)
+            print(i)
+            if i:
+                del materials[i]
         materials = [ (int(key),val) for key,val in materials.items() ]
-        print(materials)
         data['materials'] = set(materials)
-
+        if send_expense:
+            if send_expense[0] == '001':
+                print('send_expense---'*3)
+                print(data['materials'])
+                print(send_expense)
+                data=data['materials']
+#                add = addExpense()
+                return redirect('core/orders/addtype/'+str(order_id))
         return render_template('store/expense.html', form=form, data=data, date_today=date_today)
     return render_template('store/expense.html', form=form, data=data, date_today=date_today)
 
-@core.route('/store/del/<id>', methods=['GET','POST'])
+@core.route('/store/incoming/del/<id>', methods=['GET','POST'])
 def deletestore(id):
     """Удаление позиции на складе """
-    form = StoreForm()
-    data = viewStoreId(id)
+    form = StoreIncomingForm()
+    data = viewStoreIncomingId(id)
     if request.method == 'POST':
-        delete = deleteStoreId(id)
+        delete = deleteStoreIncomingId(id)
         if delete == 'None':
             return redirect('core/store/all')
         else:
             return redirect('core/store/all')
-    return render_template('store/delete.html', form=form, data=data)
+    return render_template('store/incoming/delete.html', form=form, data=data)
+
 # --- STORE GROUP ---
 
 @core.route('/store/groups/add', methods=['GET','POST'])
@@ -413,13 +537,9 @@ def addgroupsstore():
             if i.data != None:
                 add.append((i.name,i.data))
         add_data = dict(add)
-        del add_data['csrf_token']
-        add = addGroupProduct(**add_data)
-        if add == 'error':
-            error = 'Ошибка'
-            return render_template('store/groups/add.html',form=form, error=error)
-        else:
-            return redirect('core/store/all')
+        mod = ModGroupStore()
+        mod.add(name=add_data.get('name'),descr=add_data.get('descr'))
+        return redirect('core/store/all')
     return render_template('store/groups/add.html', form=form)
 
 @core.route('/error', methods=['GET'])

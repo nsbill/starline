@@ -1,48 +1,41 @@
 from datetime import datetime
 
 class ModStore:
-    ''' Модуль для склада'''
+    """Модуль для склада"""
     def __init__(self):
-        self.vendor = ''
-        self.name = ''
-        self.quantity = ''
-        self.quantity_sum = ''
-#        self.units = ''
-        self.descr = ''
-        self.csrf_token = ''
+        self.name=''
 
-    def all(self):
-        """ Выборка всех даных """
-        data = dict(zip(['vendor',
-                        'name',
-                        'quantity',
-                        'quantity_sum',
-                        'descr',
-                        'csrf_token'],
-                                (self.vendor,
-                                self.name,
-                                self.quantity,
-                                self.quantity_sum,
-                                self.descr,
-                                self.csrf_token
-                                )))
+    def default(self):
+        data = {'vendor': '',
+                'name': '',
+                'quantity': '',
+                'quantity_sum': '',
+                'descr': '',
+                'csrf_token': '',
+                }
         return data
 
     def add(self, **kwargs):
         """ Добавить позицию """
-        self.kwargs = self.show()
-        for i in kwargs:
+        self.kwargs = self.default()
+        for i in self.kwargs:
             self.kwargs[i] = kwargs[i]
         return self.kwargs
 
-#    def addtype(self, **kwargs):
-#        '''Add an order type '''
-#        return self.kwargs
+    def additems(**kwargs):
+        data = []
+        for i in kwargs:
+            data.append(i)
+        return data
 
-#    def edit(self):
-#        '''Редактирование '''
-#        pass
+##    def addtype(self, **kwargs):
+##        '''Add an order type '''
+##        return self.kwargs
 #
-#    def delete(self):
-#        '''Удаление'''
-#        pass
+#    def edit(self,*args):
+#        '''Редактирование '''
+#        
+##
+##    def delete(self):
+##        '''Удаление'''
+##        pass

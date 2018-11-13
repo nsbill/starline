@@ -197,6 +197,7 @@
       <table class="stack">
         <thead>
           <tr>
+            <th>Артикул</th>
             <th width="50%">Наименнование</th>
             <th width="16%">Кол-во</th>
             <th width="7%">Ценa, руб</th>
@@ -207,11 +208,12 @@
         {% for order in sot[0] %}
         <tbody>
           <tr>
+            <td>###</td>
             <td>{{ order[0].name }}</td>
             <td>{{ order[0].quantity}} | {{ order[0].units }}</td>
             <td>{{ order[0].quantity_sum|round(2)}}</td>
             <td>{{ order[1]|round(2)}}</td>
-            <td><a href="{{ get_ablolute_url  }}/core/orders/edittype/{{ order[0].id }}">ред. </a> / <a href="{{ get_ablolute_url  }}/core/orders/deltype/{{ order[0].id }}">уд.</a></td>
+            <td></td>
           </tr>
         </tbody>
       {% endfor %}

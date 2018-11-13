@@ -18,16 +18,16 @@
         <div class="medium-5  medium-offset-2">
             <h3>Добавить затраты по офису</h3>
             <div class="cell small-12 medium-2 large-2">
-                {{form.name(placeholder="Наименование")}}
+              <label>Наименование: </label> {{form.name(placeholder="Наименование")}}
             </div>
             <div class="cell small-12 medium-2 large-2">
               {% if form.quantity_sum.errors %}
                 {{ form.quantity_sum.errors }}
               {% endif %}
-              {{ form.quantity_sum }}
+              <label>Сумма:</label> {{ form.quantity_sum }}
             </div>
             <div class="cell small-12 medium-2 large-2">
-                {{form.descr(placeholder="Описание")}} 
+             <label>Описание:</label>  {{form.descr(placeholder="Описание")}} 
             </div>
             <div>
                 <input type="submit" class="button" value="Внести">

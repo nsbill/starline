@@ -16,7 +16,7 @@
       <div class="grid-x grid-margin-x">
     <div class="medium-10 medium-offset-1 cell">
         <h3>Группa "{{ grprod.name }}" </h3>
-      <p><a href="{{ get_ablolute_url  }}/core/store/add"> Добавить наименование</a></p>
+      <p><a href="{{ get_ablolute_url  }}/core/store/incoming/add"> Добавить наименование</a></p>
         <label>
       <input type="submit" class="button" value="Выборка ">
         <select name="gid">
@@ -55,7 +55,7 @@
             <td>{{ item.quantity_sum|round(2)}}</td>
             <td> --- </td>
             <td>{{ item.descr }}</td>
-            <td><a href="{{ get_ablolute_url  }}/core/store/edit/{{ item.id }}">ред. </a> / <a href="{{ get_ablolute_url  }}/core/store/del/{{ item.id }}">уд.</a></td>
+            <td><a href="{{ get_ablolute_url  }}/core/store/incoming/edit/{{ item.id }}">ред. </a> / <a href="{{ get_ablolute_url  }}/core/store/incoming/del/{{ item.id }}">уд.</a></td>
           </tr>
         </tbody>
       {% endfor %}

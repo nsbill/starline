@@ -54,7 +54,7 @@
             <td>{{ form.quantity(value=data.quantity) }}</td>
             <td>{{ form.units(value=data.units) }}</td>
             <td>{{ form.quantity_sum(value=data.quantity_sum) }}</td>
-            <td>{{ form.descr(value=data.descr) }}</td>
+            <td><textarea name="descr">{{ data.descr }}</textarea></td>
           </tr>
         </tbody>
       </table>

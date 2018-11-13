@@ -32,11 +32,7 @@ class AdminRole(db.Model, RoleMixin):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), unique=True)
     descr = db.Column(db.String(255))
-#
-##roles_users = db.Table('roles_users',
-##        db.Column('admin_user_id', db.Integer(), db.ForeignKey('admin_user.id')),
-##        db.Column('admin_role_id', db.Integer(), db.ForeignKey('admin_role.id')),
-##    )
+
 class Orders(db.Model):
     __tablename__='orders'
     id = db.Column(db.Integer, primary_key=True)
@@ -103,6 +99,7 @@ class Incoming(db.Model):
     value = db.Column('value', db.Float())
     amount = db.Column('amount', db.Float())
     pay_info = db.Column('pay_info',db.Integer())
+    oid = db.Column('oid',db.Integer(), db.ForeignKey('orders.id'))
     gid = db.Column('gid',db.Integer(), db.ForeignKey('group_product.id'))
     sid = db.Column('sid',db.Integer(), db.ForeignKey('supplier.id'))
 
@@ -118,6 +115,7 @@ class Expense(db.Model):
     value = db.Column('value', db.Float())
     amount = db.Column('amount', db.Float())
     pay_info = db.Column('pay_info',db.Integer())
+    oid = db.Column('oid',db.Integer(), db.ForeignKey('orders.id'))
     gid = db.Column('gid',db.Integer(), db.ForeignKey('group_product.id'))
     sid = db.Column('sid',db.Integer(), db.ForeignKey('supplier.id'))
 
@@ -135,8 +133,26 @@ class Supplier(db.Model):
     address = db.Column('address', db.String(120))
     descr = db.Column('descr', db.String(240))
 
+#store_ven_incoming = db.Table('store_ven_id',
+#        db.Column('store_id', db.Integer(), db.ForeignKey('store.id')),
+#        db.Column('store_incoming_id', db.Integer(), db.ForeignKey('store_incoming.id')),
+#    )
 class Store(db.Model):
     """Склад"""
+    __tablename__ = 'store'
+    id = db.Column(db.Integer(), primary_key=True)
+    vendor = db.Column('vendor',db.Integer())
+    units = db.Column('units', db.String(10))
+    quantity = db.Column('quantity', db.Float())
+    quantity_sum = db.Column('quantity_sum', db.Float(), nullable=False)
+    total_sum = db.Column('total_sum', db.Float(), nullable=False,default=0)
+    gid = db.Column('gid',db.Integer(), db.ForeignKey('group_product.id'))
+    store_incominges = db.relationship('StoreIncoming', backref='storeincoming',lazy='dynamic')
+#    list_vendor = db.relationship('StoreIncoming', secondary=store_ven_incoming, backref=db.backref('storeincoming', lazy='dynamic'))
+
+class StoreIncoming(db.Model):
+    """Склад приход"""
+    __tablename__ = 'store_incoming'
     id = db.Column(db.Integer(), primary_key=True)
     date = db.Column('date',db.DateTime(), default=current_timestamp())
     vendor = db.Column('vendor',db.Integer())
@@ -144,8 +160,10 @@ class Store(db.Model):
     units = db.Column('units', db.String(10))
     quantity = db.Column('quantity', db.Float())
     quantity_sum = db.Column('quantity_sum', db.Float(), nullable=False)
+    total_sum = db.Column('total_sum', db.Float(), nullable=False,default=0)
     descr = db.Column('descr', db.String(240))
     gid = db.Column('gid',db.Integer(), db.ForeignKey('group_product.id'))
+    store_id = db.Column('store_id',db.Integer(), db.ForeignKey('store.id'))
 
 class ExpenseCompany(db.Model):
     """Расходы фирмы"""

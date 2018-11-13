@@ -15,7 +15,7 @@
       <div class="medium-10 medium-offset-1 cell">
       <h3>Склад</h3>
       <p></p>
-      <label>Валюта: <b>Российский рубль</b> / <a href="{{ get_ablolute_url  }}/core/store/add"><b> Добавить наименование </b></a> / <a href="/core/store/groups/add" ><b>Добавить группу</b></a></label>
+      <label>Валюта: <b>Российский рубль</b> / <a href="{{ get_ablolute_url  }}/core/store/incoming/add"><b> Добавить наименование </b></a> / <a href="/core/store/groups/add" ><b>Добавить группу</b></a></label>
       <form method="POST">
           <input type="submit" class="button" value="Сортировка по группе">
           <select name="gid">
@@ -30,31 +30,27 @@
       <table class="stack">
         <thead>
           <tr>
-            <th width="5%">ID</th>
+            <th width="2%">ID</th>
+            <th width="2%">GID</th>
             <th width="5%">Артикул</th>
-            <th width="15%">Дата</th>
             <th width="40%">Наименование</th>
             <th width="7%">Кол-во</th>
             <th width="5%">Ед.</th>
-            <th width="7%">Ценa, руб</th>
-            <th width="7%">Сумма, руб</th>
-            <th width="25%">Описание</th>
-            <th width="7%"></th>
+            <th width="7%">Ценa 1ед</th>
+            <th width="7%">Сумма</th>
           </tr>
         </thead>
         {% for item in data %}
         <tbody>
           <tr>
             <td>{{ item.id }}</td>
+            <td>{{ item.gid }}</td>
             <td>{{ item.vendor }}</td>
-            <td>{{ item.date.strftime('%Y-%m-%d %H:%M:%S')}}</td>
             <td>{{ item.name }}</td>
             <td>{{ item.quantity|round(2)}}</td>
             <td>{{ item.units }}</td>
             <td>{{ item.quantity_sum|round(2)}}</td>
-            <td> --- </td>
-            <td>{{ item.descr }}</td>
-            <td><a href="{{ get_ablolute_url  }}/core/store/edit/{{ item.id }}">ред. </a> / <a href="{{ get_ablolute_url  }}/core/store/del/{{ item.id }}">уд.</a></td>
+            <td>{{ item.total_sum }} </td>
           </tr>
         </tbody>
       {% endfor %}

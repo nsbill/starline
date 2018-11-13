@@ -6,6 +6,23 @@ sys.path.insert(0,'/app/modules/expense')
 
 from models import Expense, ExpenseCompany
 
+# --- Expense -----
+
+def allExpense():
+    """ Выборка всех позиций в таб. Expense """
+    query = Expense.query.all()
+    return query
+
+def addExpense(**kwargs):
+    """ Добавить позицию в таб. Expense """
+    db.session.close()
+    data = Expense(**kwargs)
+    db.session.add(data)
+    db.session.commit()
+    return 'Add an Expense'
+
+# --- ExpenseCompany ----
+
 def allExpenseCompany():
     query = ExpenseCompany.query.all()
     return query
