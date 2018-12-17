@@ -165,6 +165,21 @@ class StoreIncoming(db.Model):
     gid = db.Column('gid',db.Integer(), db.ForeignKey('group_product.id'))
     store_id = db.Column('store_id',db.Integer(), db.ForeignKey('store.id'))
 
+class StoreIncomingTemp(db.Model):
+    __tablename__ = 'store_incoming_temp'
+    id = db.Column(db.Integer(), primary_key=True)
+    ord_tmp_id = db.Column('ord_tmp_id',db.Integer())
+    date = db.Column('date',db.DateTime(), default=current_timestamp())
+    vendor = db.Column('vendor',db.Integer())
+    name = db.Column('name', db.String(255), nullable=False)
+    units = db.Column('units', db.String(10))
+    quantity = db.Column('quantity', db.Float())
+    quantity_sum = db.Column('quantity_sum', db.Float(), nullable=False)
+    total_sum = db.Column('total_sum', db.Float(), nullable=False,default=0)
+    descr = db.Column('descr', db.String(240))
+    gid = db.Column('gid',db.Integer(), db.ForeignKey('group_product.id'))
+    store_id = db.Column('store_id',db.Integer(), db.ForeignKey('store.id'))
+
 class ExpenseCompany(db.Model):
     """Расходы фирмы"""
     id = db.Column(db.Integer(), primary_key=True)

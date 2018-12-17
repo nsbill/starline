@@ -99,6 +99,7 @@ class ExpenseCompanyForm(FlaskForm):
 
 class StoreIncomingForm(FlaskForm):
     """ Склад """
+    id = IntegerField('id',validators=[InputRequired()])
     vendor = IntegerField('discount',default=0,validators=[InputRequired(), NumberRange(min=1, message='Ошибка: только целые числа в артикуле')])
     name = StringField('name', validators=[InputRequired()])
     units = SelectField(u'units', choices=[('шт.', 'шт.'),('ед.','ед.'), ('м', 'м'), ('м2', 'м2.'),('мл.','мл.'),('услуга','услуга'),])

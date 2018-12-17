@@ -20,7 +20,7 @@
                 <ul class="vertical tabs" data-tabs id="example-tabs">
                   <li class="tabs-title is-active"><a href="#1" aria-selected="true">Склад</a></li>
                   {% for i in data.allgrprod %}
-                     <li class="tabs-title"><a href="{{ get_absolute_url }}/core/store/incoming/add?g={{ i.id }}">{{ i.name }}</a></li>
+                     <li class="tabs-title"><a href="{{ get_absolute_url }}/core/store/incoming/add/{{ i.id }}">{{ i.name }}</a></li>
                   {% endfor %}
                 </ul>
               </div>
@@ -35,45 +35,44 @@
                       <a href="/"><b>Новый товар</b></a>
                     </div>
                   </div>
+                  {{ obj }}
                   <form method="POST" id="zxc" name="store">
                     {{ data }}
                       {{ data.NewAddItemID }}
-                    <input type="text" size="40" name="{{ data.incomings }}">
-                          {% if data.ListGroupID %}
+                      {{ data.ListAddItemsId}}
                     <table class="stack" style="font-size: 80%;">
                       <thead>
                         <tr>
-                          <th width="2%">id</th>
-                          <th width="2%">Артикул</th>
+                          <th>id</th>
+                          <th>Артикул</th>
                           <th>Номенклатура</th>
-                          <th width="11%">Кол-во</th>
-                          <th width="10%">Ед.</th>
-                          <th width="12%">Ценa,1ед</th>
+                          <th>Кол-во</th>
+                          <th>Ед.</th>
+                          <th>Ценa,1ед</th>
                           <th></th>
                         </tr>
                       </thead>
-                        {% for item in data.NewAddItemID %}
-                        {{ item }}
+                      {% for item in data.ListAddItemsId %}
                           <tbody>
                             <tr>
-                              <td>{{ item.id}}</td>
-                              <td>{{ item.vendor }}</td>
-                              <td>{{ item.name }}</td>
-                              <td>{{ form.quantity(value=item.quantity|round(2))}}</td>
-                              <td>{{ form.units(value=item.units) }}</td>
-                              <td>{{ form.quantity_sum(value=item.quantity_sum|round(2))}}</td>
+                              <form name="save" method="POST">
+                              <td><input size="3" name="Incoming{{ item.id }}" value="{{ item.id }}"></td>
+                              <td><input size="3" name="Inc{{ item.id }}_vendor" value="{{ item.vendor }}"></td>
+                              <td><input name="Inc{{ item.id }}_name" value="{{ item.name }}"></td>
+                              <td><input size="6" name="Inc{{ item.id }}_quantity" value="0"></td>
+                              <td><input size="3" name="Inc{{ item.id }}_units" value="{{ item.units}}"></td>
+                              <td><input size="6" name="Inc{{ item.id }}_quantity_sum" value="0"></td>
                               <td>
-                                <input name="000{{ item.id }}" type="submit" class="button" value="del">
+                                <input name="Inc_save_item{{ item.id }}" type="submit" class="button" value="Записать">
+                                <input alt='del' name="del_item{{ item.id }}" type="submit" class="button" value="del">
+                              </td>
                             </tr>
                           </tbody>
                       {% endfor %}
+                              </form>
                     </table>
-                      {% endif %}
-                    {% if data.materials %}
-                    <input name="001" type="submit" class="button" value="Провести">
-                    <a href="{{ get_absolute_url }}/core/orders/addtype/{{ data.order_id }}">Отмена </a></td>
-
-                      {{ data }}
+                    {% if data.ListAddItemsId %}
+                    <a href="{{ get_absolute_url }}/core/store/incoming/add/{{ data.gid }}">Отмена </a></td>
                       {{ data.NewAddItemID }}
                     <p>{{ data.materials }}</p>
 

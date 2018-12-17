@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  Приход на склад 
+{% endblock %}
+
+{% block content_titel %}
+  Приход на склад
+{% endblock %} 
+
+{% block content %}
+{% from "_formhelpers.html" import render_field %}
+<div class="grid-x grid-padding-x">
+  <div class="medium-12 cell">
+      <div class="grid-x grid-padding-x">
+        <div class="medium-11 medium-offset-1 cell">
+          <div class="grid-x grid-margin-x">
+            <div class="cell medium-3">
+              <ul class="vertical tabs" data-tabs id="example-tabs">
+                <li class="tabs-title is-active"><a href="#1" aria-selected="true">Склад</a></li>
+                {% for i in data.allgrprod %}
+                    <li class="tabs-title"><a href="#p{{ i.id }}">{{ i.name }}</a></li>
+                {% endfor %}
+              </ul>
+            </div>
+            <div class="cell medium-9">
+              <h3>Приходная накладная на склад</h3>
+    <form method="POST" name="addincoming">
+                {% if form.vendor.errors %}
+                  {{ form.vendor.errors }}
+                {% endif %}
+                {% if form.quantity.errors %}
+                  {{ form.quantity.errors }}
+                  {% endif %}
+                {% if form.quantity_sum.errors %}
+                  {{ form.quantity_sum.errors }}
+                {% endif %}
+                <label>Валюта: <b>Российский рубль</b> /  <a href="/core/store/groups/add" ><b>Добавить группу</b></a></label>
+                <label>Группы
+                  <select name="gid">
+                  {% for i in data.allgrprod %}
+                  <option value="{{ i.id }}">
+                      {{ i.id }} | {{ i.name }} | {{ i.descr }}
+                    </option>
+                  {% endfor %}
+                  </select>
+                </label>
+                <table align="center" class="stack">
+                  <thead>
+                    <tr>
+                      <th width="5%">Артикул</th>
+                      <th width="40%">Наименование</th>
+                      <th width="7%">Ценa</th>
+                      <th width="7%">Кол-во</th>
+                      <th width="7%">Ед.</th>
+                      <th width="7%">Сумма</th>
+                      <th width="25%">Описание</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>{{ form.vendor }}</td>
+                      <td>{{ form.name }}</td>
+                      <td>{{ form.quantity_sum }}</td>
+                      <td>{{ form.quantity }}</td>
+                      <td>{{ form.units}}</td>
+                      <td>Сумма</td>
+                      <td>{{ form.descr }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+                  <input type="submit" class="button" value="Внести">
+                  <a href="{{ get_ablolute_url  }}/core/store/all">Отмена</a>		
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+                    {% for i in data.allgrprod %}
+                    <div class="tabs-panel" id="p{{ i.id }}">
+                      <table class="stack" style="font-size: 80%;">
+                        <thead>
+                          <tr>
+                            <th>id</th>
+                            <th width="5%">Артикул</th>
+                            <th width="40%">Наименование</th>
+                            <th>Кол-во</th>
+                            <th>Ед.</th>
+                            <th>Ценa,1ед</th>
+                            <th>Описание</th>
+                            <th>Выбрать</th>
+                          </tr>
+                        </thead>
+                        {% for item in data.allstore %}
+                          {% if item.gid == i.id %}
+                            <tbody>
+                              <tr>
+                                <td>{{ item.id}}</td>
+                                <td>{{ item.vendor }}</td>
+                                <td>{{ item.name }}</td>
+                                <td>{{ item.quantity|round(2)}}</td>
+                                <td>{{ item.units }}</td>
+                                <td>{{ item.quantity_sum|round(2)}}</td>
+                                <td>{{ item.descr }}</td>
+                                <td>
+                                  <input id="checkbox{{ item.id }}" name="{{item.id}}" value="0" type="checkbox"><label for="checkbox{{ item.id }}"></label>
+                              </tr>
+                            </tbody>
+                          {% endif %}
+                        {% endfor %}
+                      </table>
+                    <input type="submit" class="button" value="Добавить">
+                    </div>
+                    {% endfor %}
+</div>
+{% endblock %}
+

@@ -1,6 +1,5 @@
 from flask import Blueprint
-from flask import render_template,request,redirect
-from flask import url_for
+from flask import render_template, request, redirect,session, url_for
 from flask_wtf import FlaskForm
 #import datetime
 from datetime import datetime, date, timedelta
@@ -21,7 +20,7 @@ from mod_groupstore import ModGroupStore
 from orders import allOrders, infoOrder, addOrder, addOrderType, viewOrder, viewOrderType, selectOrderType, discountOrder, editQuantity, deleteQuantity, editDiscountOrder
 from pays import addpay_order, calcPayOrder, selectPaysOrder, calcPaysOrder, calcPayment, allPays, allDatePays, viewPay, deletePay
 from expense import allExpense, addExpense, allExpenseCompany, addExpenseCompany, viewExpenseCompanyId, editExpenseCompanyId, deleteExpenseCompanyId
-from store import allStore, allStoreIncoming, addStoreIncoming, listStoreIncomingGID, viewStoreIncomingId, editStoreIncomingId, deleteStoreIncomingId, checkVendorStore
+#from store import allStore, allStoreIncoming, addStoreIncoming, listStoreIncomingGID, viewStoreIncomingId, editStoreIncomingId, deleteStoreIncomingId, checkVendorStore
 
 @core.route('/', methods=['GET'])
 def index():
@@ -287,7 +286,9 @@ def deletecompanyexpense(id):
 @core.route('/store/all', methods=['GET','POST'])
 def allstore():
     """Список всех позиций на складе """
-    data = allStore()
+    modstore = ModStore()
+    data = modstore.all()
+#    data = allStore()
 #    allgrprod = allGroupProduct()
     mod = ModGroupStore()
     allgrprod = mod.all()
@@ -299,11 +300,12 @@ def allstore():
 @core.route('/store/list/<gid>', methods=['GET','POST'])
 def liststore(gid):
     """ Просмотр группы на складе """
+    modstore = ModStore()
     mod = ModGroupStore()
     allgrprod = mod.all()
     grprod_id = mod.show(gid)
-    data = viewStoreIncomingId(gid)
-    gid_list = listStoreIncomingGID(gid)
+    data = modstore.viewStoreIncomingId(gid)
+    gid_list = modstore.listStoreIncomingGID(gid)
 #    allgrprod = allGroupProduct()
     if request.method == 'POST':
         gid=request.form['gid']
@@ -316,7 +318,7 @@ def liststore(gid):
 @core.route('/store/incoming/list', methods=['GET','POST'])
 def incoming_list():
     """Просмотр всех наименований на склад"""
-    data = allStoreIncoming()
+    data = modstore.allStoreIncoming()
 #    allgrprod = allGroupProduct()
     mod = ModGroupStore()
     allgrprod = mod.all()
@@ -334,41 +336,29 @@ def addstore():
     """Приход на склад """
     date_today = date.today().strftime('%Y-%m-%d')
     form = StoreIncomingForm(request.form)
-#    allgrprod = allGroupProduct()
     mod = ModGroupStore()
+    modstore = ModStore()
     allgrprod = mod.all()
-#    allstore1 = allStoreIncoming()
-#    print(allstore1)
     data={}
     data['allgrprod']=allgrprod
-#    data['allstore']=allstore
-    print('-=get'*30)
-    print(request.args.get('g'))
-    print('='*80)
     gid = request.args.get('g')
-    print(listStoreIncomingGID(gid))
-    listGroupID = listStoreIncomingGID(gid)
+    listGroupID = modstore.listStoreIncomingGID(gid)
     print('-FORM-'*10)
+    print(request.args)
     print(request.form)
     addIncomItemId = list(request.form.to_dict())
-#    incomings.append(addIncomItemId)
     print(addIncomItemId)
     data['listGroupID'] = listGroupID
     data['incomings'] = addIncomItemId
     if request.method == 'POST':
-        print('-1'*30)
-        print(request.form)
-        print(request)
         materials = request.form.to_dict()
-        print('materials---'*3)
+        print('-=-materials==='*8)
         print(materials)
-        print('Get-'*10)
-        print('-dict-ListAddItemsId-'*3)
-        print(data.values())
         ListAddItemsId=ModStore.additems(**materials)
-        print('ListAddItemsId---'*3)
-        print(ListAddItemsId)
-        data['ListAddItemsId'] = ListAddItemsId
+#        data['ListAddItemsId'] = ListAddItemsId
+        data['ListAddItemsId'] = [ modstore.viewStoreIncomingId(int(i)) for i in ListAddItemsId]
+        return render_template('store/incoming/add.html', form=form, data=data, date_today=date_today)
+    return render_template('store/incoming/add.html', form=form, data=data, date_today=date_today)
 #        cancel=[]
 #        send_expense = []
 #        for key,val in materials.items():
@@ -393,8 +383,6 @@ def addstore():
 #                data=data['materials']
 ##                add = addExpense()
 #                return redirect('core/orders/addtype/'+str(order_id))
-        return render_template('store/incoming/add.html', form=form, data=data, date_today=date_today)
-    return render_template('store/incoming/add.html', form=form, data = data, date_today=date_today)
 #    if request.method == 'POST' and form.validate():
 #        add = []
 #        for i in form:
@@ -421,32 +409,51 @@ def addstore():
 @core.route('/store/incoming/add/<gid>', methods=['GET','POST'])
 def addlistitems(gid):
     """Выборка с группы наименования """
+    modstore = ModStore()
     date_today = date.today().strftime('%Y-%m-%d')
     form = StoreIncomingForm(request.form)
-    data = listStoreIncomingGID(gid)
+    data = modstore.listStoreIncomingGID(gid)
+    mod = ModGroupStore()
+    allgrprod = mod.all()
+    listGroupID = modstore.listStoreIncomingGID(gid)
+    addIncomItemId = list(request.form.to_dict())
+    data={}
+    data['gid'] = gid
+    data['allgrprod'] = allgrprod
+    data['listGroupID'] = listGroupID
+    data['incomings'] = addIncomItemId
+    data['ListAddItemsId'] = []
+    materials = request.form.to_dict()
     if request.method == 'POST':
-        print('-1'*30)
-        print(request.form)
-        print(request)
-        materials = request.form.to_dict()
-        print('materials---'*3)
-        print(materials)
-        print('Get-'*10)
-        print('-dict-ListAddItemsId-'*3)
-        print(data.values())
+        del_item_id = [ k for k, v in materials.items() if v == 'del']
+        if del_item_id:
+            item_id = str(del_item_id[0][8:])
+            del materials[del_item_id[0]]
+            del materials['Incoming' + str(item_id)]
+#        save_items = request.form.get('save_items')
+        save_item = [ k for k, v in materials.items() if v == 'Записать']
+        print(save_item)
+        if save_item:
+            save_item_id = str(save_item[0][13:])
+            save = [ (k,v) for k, v in materials.items() if k[:4] == 'Inc'+save_item_id]
+            print(save)
         ListAddItemsId=ModStore.additems(**materials)
-        print('ListAddItemsId---'*3)
+        print('------ListAddItemsId-----'*5)
         print(ListAddItemsId)
-        data['ListAddItemsId'] = ListAddItemsId
+        print(request.form.to_dict())
+        print('-FORM-'*10)
+        print(request.form)
+        data['ListAddItemsId'] = [ modstore.viewStoreIncomingId(int(i)) for i in ListAddItemsId]
         return render_template('store/incoming/add.html', form=form, data=data, date_today=date_today)
     return render_template('store/incoming/add.html', form=form, data=data, date_today=date_today)
 
 @core.route('/store/incoming/edit/<id>', methods=['GET','POST'])
 def editstore(id):
     """ Редактирование позицию на складе """
+    modstore = ModStore()
     mod = ModGroupStore()
     form = StoreIncomingForm()
-    data = viewStoreIncomingId(id)
+    data = modstore.viewStoreIncomingId(id)
 #    grprod_id = viewGroupProduct(data.gid)
     grprod_id = mod.show(data.gid)
 #    allgrprod = allGroupProduct()
@@ -462,7 +469,7 @@ def editstore(id):
         print(update)
         update['total_sum'] = float(update['quantity']) * float(update['quantity_sum'])
         del update['csrf_token']
-        edit = editStoreIncomingId(id,**update)
+        edit = modstor.editStoreIncomingId(id,**update)
         if add == 'error':
             error = 'Ошибка'
             return render_template('store/incoming/edit.html',form=form, error=error)
@@ -475,10 +482,10 @@ def addexpensestore(order_id):
     """ Создание расходной накладной """
     date_today = date.today().strftime('%Y-%m-%d')
     form = StoreIncomingForm()
-#    allgrprod = allGroupProduct()
+    modstore = ModStore()
     mod = ModGroupStore()
     allgrprod = mod.all()
-    allstore = allStoreIncoming()
+    allstore = modstore.allStoreIncoming()
     data = {}
     data['order_id']=order_id
     data['allgrprod']=allgrprod
@@ -515,10 +522,11 @@ def addexpensestore(order_id):
 @core.route('/store/incoming/del/<id>', methods=['GET','POST'])
 def deletestore(id):
     """Удаление позиции на складе """
+    modstore = ModStore()
     form = StoreIncomingForm()
     data = viewStoreIncomingId(id)
     if request.method == 'POST':
-        delete = deleteStoreIncomingId(id)
+        delete = modstore.deleteStoreIncomingId(id)
         if delete == 'None':
             return redirect('core/store/all')
         else:
